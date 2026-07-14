@@ -1,0 +1,770 @@
+/* =========================================================================
+   WEBMOTOR TÉMARENDSZER
+   -------------------------------------------------------------------------
+   A komponensek (lentebb) kizárólag CSS-változókat használnak. Egy téma nem
+   más, mint ezeknek a változóknak egy készlete a [data-theme='...'] blokkban.
+   Új téma hozzáadása: 1. új blokk itt, 2. új opció a SiteSettings témalistában.
+   ========================================================================= */
+
+/* ---------- 1. TÉMA: FOLYÓIRAT — irodalmi, nyugodt, olvasásra hangolt ----- */
+[data-theme='folyoirat'] {
+  --bg: #fbf8f1;
+  --surface: #ffffff;
+  --ink: #26211a;
+  --ink-soft: #6e6455;
+  --accent: #1e5741;
+  --accent-contrast: #f4fbf7;
+  --line: #e4dccb;
+  --radius: 2px;
+  --radius-lg: 4px;
+  --font-display: var(--font-lora);
+  --font-body: var(--font-lora);
+  --font-ui: var(--font-inter);
+  --display-weight: 600;
+  --display-transform: none;
+  --display-tracking: -0.01em;
+  --kicker-style: text; /* a kicker csupasz kiskapitális szöveg */
+  --card-rule: 1px solid var(--line);
+  --selection-bg: #dceadf;
+}
+
+/* Szignatúra: iniciálé a cikk első bekezdésén */
+[data-theme='folyoirat'] .article-body .rich > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-lora);
+  font-size: 3.4em;
+  line-height: 0.85;
+  padding: 0.06em 0.12em 0 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+[data-theme='folyoirat'] .article-meta,
+[data-theme='folyoirat'] .hero-eyebrow,
+[data-theme='folyoirat'] .kicker {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.14em;
+}
+
+/* ---------- 2. TÉMA: STÚDIÓ — modern, éles, technológiai ------------------ */
+[data-theme='studio'] {
+  --bg: #fcfcfd;
+  --surface: #ffffff;
+  --ink: #0e0f13;
+  --ink-soft: #5b5f6b;
+  --accent: #2545e8;
+  --accent-contrast: #ffffff;
+  --line: #e7e8ee;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --font-display: var(--font-grotesk);
+  --font-body: var(--font-inter);
+  --font-ui: var(--font-inter);
+  --display-weight: 600;
+  --display-transform: none;
+  --display-tracking: -0.03em;
+  --card-rule: 1px solid var(--line);
+  --selection-bg: #dbe2ff;
+}
+
+/* Szignatúra: csúszó aláhúzás a szöveglinkeken */
+[data-theme='studio'] .rich a,
+[data-theme='studio'] .card-body h2 a {
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  transition: background-size 200ms ease;
+}
+[data-theme='studio'] .rich a:hover,
+[data-theme='studio'] .card-body h2 a:hover {
+  background-size: 100% 2px;
+}
+[data-theme='studio'] .card {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+[data-theme='studio'] .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(14, 15, 19, 0.09);
+}
+
+/* ---------- 3. TÉMA: MAGAZIN — harsány, nagybetűs, hírportál --------------- */
+[data-theme='magazin'] {
+  --bg: #fffcf5;
+  --surface: #ffffff;
+  --ink: #141210;
+  --ink-soft: #625c52;
+  --accent: #d62817;
+  --accent-contrast: #ffffff;
+  --line: #141210;
+  --radius: 0;
+  --radius-lg: 0;
+  --font-display: var(--font-grotesk);
+  --font-body: var(--font-inter);
+  --font-ui: var(--font-inter);
+  --display-weight: 700;
+  --display-transform: uppercase;
+  --display-tracking: -0.01em;
+  --card-rule: 3px solid var(--ink);
+  --selection-bg: #ffd84d;
+}
+
+/* Szignatúra: vastag tuslécek + piros kicker-címkék */
+[data-theme='magazin'] .card { border: none; border-top: var(--card-rule); }
+[data-theme='magazin'] .kicker {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  padding: 0.2em 0.55em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+[data-theme='magazin'] .site-header { border-bottom-width: 3px; }
+[data-theme='magazin'] .article-header { border-bottom: 3px solid var(--ink); padding-bottom: 1.2rem; }
+
+/* =========================================================================
+   KÖZÖS ALAPOK — minden téma ezekre a szabályokra épül
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+}
+
+a {
+  color: var(--accent);
+}
+
+::selection {
+  background: var(--selection-bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), sans-serif;
+  font-weight: var(--display-weight);
+  text-transform: var(--display-transform);
+  letter-spacing: var(--display-tracking);
+  line-height: 1.12;
+  color: var(--ink);
+}
+
+.shell {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ---------- Fejléc ---------- */
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.brand {
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand-name {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: var(--display-tracking);
+  text-transform: var(--display-transform);
+}
+
+.site-header nav {
+  display: flex;
+  gap: 1.4rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.95rem;
+}
+
+.site-header nav a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  color: var(--accent);
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  padding: 3.5rem 0 2.5rem;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.6rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.1rem, 5.5vw, 3.6rem);
+  margin: 0;
+  max-width: 22ch;
+}
+
+.hero-lead {
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin-top: 1rem;
+}
+
+/* ---------- Kártyarács ---------- */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
+  padding-bottom: 4rem;
+}
+
+.card {
+  background: var(--surface);
+  border: var(--card-rule);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-media img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  width: 100%;
+  border-radius: 0;
+}
+
+.card-body {
+  padding: 1.1rem 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-body h2 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.card-body h2 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.card-body h2 a:hover {
+  color: var(--accent);
+}
+
+.card-body p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  font-family: var(--font-ui), sans-serif;
+}
+
+.card-body time,
+.article-meta {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.kicker {
+  display: inline-block;
+  width: fit-content;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ---------- Cikkoldal ---------- */
+
+.article {
+  padding: 3rem 1.25rem 4.5rem;
+}
+
+.article-header {
+  max-width: 46rem;
+  margin: 0 auto 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.article-header h1 {
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  margin: 0;
+}
+
+.article-meta {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+}
+
+.article-cover {
+  margin: 0 auto 2.5rem;
+  max-width: 54rem;
+}
+
+.article-cover img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+}
+
+.article-body {
+  max-width: 42.5rem; /* olvasási mérték: ~70 karakter/sor */
+  margin: 0 auto;
+}
+
+/* Rich text (Szöveg blokk) tipográfia */
+
+.rich h2 {
+  font-size: 1.6rem;
+  margin: 2.2rem 0 0.8rem;
+}
+
+.rich h3 {
+  font-size: 1.25rem;
+  margin: 1.8rem 0 0.6rem;
+}
+
+.rich p {
+  margin: 0 0 1.1rem;
+}
+
+.rich ul,
+.rich ol {
+  padding-left: 1.4rem;
+  margin: 0 0 1.1rem;
+}
+
+.rich blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1.1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--ink-soft);
+}
+
+/* ---------- Tartalomblokkok ---------- */
+
+.b-image {
+  margin: 2rem 0;
+}
+
+.b-image figcaption {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-top: 0.5rem;
+}
+
+.b-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.8rem;
+  margin: 2rem 0;
+}
+
+.b-gallery figure {
+  margin: 0;
+}
+
+.b-gallery img {
+  aspect-ratio: 1;
+  object-fit: cover;
+  width: 100%;
+}
+
+.b-quote {
+  margin: 2.4rem 0;
+  padding: 0 0 0 1.4rem;
+  border-left: 4px solid var(--accent);
+}
+
+.b-quote p {
+  font-family: var(--font-display), serif;
+  font-size: 1.35rem;
+  line-height: 1.4;
+  margin: 0 0 0.5rem;
+}
+
+.b-quote cite {
+  font-family: var(--font-ui), sans-serif;
+  font-style: normal;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.b-cta {
+  margin: 2.4rem 0;
+  padding: 1.6rem 1.7rem;
+  background: var(--surface);
+  border: var(--card-rule);
+  border-radius: var(--radius-lg);
+}
+
+.b-cta h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+.b-cta p {
+  margin: 0 0 1.1rem;
+  color: var(--ink-soft);
+}
+
+.b-video {
+  margin: 2rem 0;
+  aspect-ratio: 16 / 9;
+}
+
+.b-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: var(--radius);
+}
+
+/* ---------- Gombok ---------- */
+
+.button {
+  display: inline-block;
+  font-family: var(--font-ui), sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.65rem 1.25rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+/* ---------- Lábléc ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  margin-top: 2rem;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding-top: 2.2rem;
+  padding-bottom: 2.6rem;
+}
+
+.footer-text {
+  color: var(--ink-soft);
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.9rem;
+  max-width: 44ch;
+}
+
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.92rem;
+}
+
+.footer-nav a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  color: var(--accent);
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1.1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.92rem;
+}
+
+/* ---------- WhatsApp gomb ---------- */
+
+.whatsapp-button {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  background: #25d366;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 40;
+}
+
+/* ---------- Consent sáv ---------- */
+
+.consent {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  max-width: 40rem;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.3rem;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16);
+  z-index: 50;
+  font-family: var(--font-ui), sans-serif;
+}
+
+.consent p {
+  margin: 0 0 0.9rem;
+  font-size: 0.92rem;
+}
+
+.consent-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Üres állapot ---------- */
+
+.empty {
+  padding: 4rem 0 6rem;
+  max-width: 40rem;
+}
+
+.empty h1,
+.empty h2 {
+  margin: 0 0 0.6rem;
+}
+
+/* ---------- Mozgásérzékenység ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ---------- Vázlat-előnézet sáv ---------- */
+
+.draft-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.6rem 1rem;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.88rem;
+}
+
+.draft-bar a {
+  color: inherit;
+  font-weight: 600;
+}
+
+/* ---------- Oldalépítő felület ---------- */
+
+.builder-body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+}
+
+.builder-frame {
+  height: 100vh;
+}
+
+.builder-status {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.9rem;
+}
+
+.builder-index {
+  padding: 3rem 1.25rem 5rem;
+}
+
+.builder-hint {
+  color: var(--ink-soft);
+  max-width: 60ch;
+  font-family: var(--font-ui), sans-serif;
+}
+
+.builder-list {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.builder-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1.1rem;
+  font-family: var(--font-ui), sans-serif;
+}
+
+.builder-slug {
+  color: var(--ink-soft);
+  margin-left: 0.7rem;
+  font-size: 0.9rem;
+}
+
+.builder-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.builder-badge {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.builder-badge.is-builder {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Oldalépítő szekciók ---------- */
+
+.pb-root {
+  padding-bottom: 3rem;
+}
+
+.pb-text {
+  max-width: 46rem;
+}
+
+.pb-placeholder {
+  border: 1px dashed var(--line);
+  color: var(--ink-soft);
+  padding: 1.2rem;
+  font-family: var(--font-ui), sans-serif;
+  margin: 1rem auto;
+}
+
+.pb-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin: 1.5rem 0;
+}
+
+.pb-card {
+  background: var(--surface);
+  border: var(--card-rule);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.3rem;
+}
+
+.pb-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.pb-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.95rem;
+}
+
+.pb-space-s { height: 1.5rem; }
+.pb-space-m { height: 3rem; }
+.pb-space-l { height: 5.5rem; }
