@@ -65,6 +65,25 @@ A táblákat a Payload fejlesztői módban automatikusan létrehozza és szinkro
 
 ---
 
+## Verziókezelés (git)
+
+A projekt kész git-repó: minden verzió commitolva és címkézve (`v0.1.0`, `v0.2.0`, …).
+
+**Egyszeri teendő — a repó feltöltése GitHubra (kb. 2 perc):**
+1. github.com → *New repository* → név: `webmotor`, láthatóság: **Private** → és **üresen** hozd létre (semmilyen "Add README / .gitignore" pipát ne jelölj be).
+2. Majd a projekt mappájában:
+
+```bash
+git remote add origin https://github.com/FELHASZNALONEV/webmotor.git
+git push -u origin main --follow-tags
+```
+
+3. A commitok szerzőjét írjátok át sajátra: `git config user.name "Neved"` és `git config user.email "email@cim.hu"`.
+
+**Sprint-munkafolyamat:** minden átadott verzió új committal és verziócímkével érkezik — átvétel után csak `git push --follow-tags`. **Visszaállás egy régi kódverzióra:** `git checkout vX.Y.Z` (és mellé a hozzá tartozó tartalmi mentés visszatöltése: lásd a Mentés fejezetet).
+
+---
+
 ## Mentés és visszaállítás
 
 A tartalom (adatbázis + feltöltött képek) egy paranccsal menthető és visszaállítható:
