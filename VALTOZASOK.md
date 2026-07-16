@@ -4,6 +4,16 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.4.0 — 2026-07-16 (oldalépítő bővítése)
+- 4 új szekció az oldalépítőben: Árlista (kiemelhető csomagok, CTA), Vélemények,
+  GYIK (JS nélkül működő lenyílók), Kapcsolatűrlap
+- Beérkezett üzenetek kollekció az adminban + /api/kapcsolat végpont
+  honeypot spam-védelemmel (a nyilvános REST API-n nem írható)
+- Vázlat-mentés a builderben: a "Vázlat mentése" gomb publikálás nélkül ment,
+  a "Vázlat-előnézet" linken nézhető meg; a Publish változatlanul élesít
+- Új migráció (urlap-bekuldesek); 5 új integrációs teszt az űrlap-feldolgozásra;
+  élő böngészős ellenőrzés (szekciók, űrlapbeküldés, vázlat-mentés) elvégezve
+
 ## v0.3.0 — 2026-07-16 (keresés az oldalon)
 - Postgres full-text keresés magyarra hangolva: ékezet-egyszerűsített
   prefix-egyezés (a toldalékos alakokat is megtalálja) + szótövezett ág,

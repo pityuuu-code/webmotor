@@ -11,6 +11,7 @@ import sharp from 'sharp'
 import { embedBlocks } from './blocks'
 import { Articles } from './collections/Articles'
 import { Categories } from './collections/Categories'
+import { FormSubmissions } from './collections/FormSubmissions'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Redirects } from './collections/Redirects'
@@ -61,7 +62,7 @@ export default buildConfig({
     fallbackLanguage: 'hu',
     supportedLanguages: { hu, en },
   },
-  collections: [Articles, Pages, Categories, Media, Users, Redirects],
+  collections: [Articles, Pages, Categories, Media, Users, Redirects, FormSubmissions],
   globals: [SiteSettings, Navigation],
   // Klasszikus, WordPress-szerű szövegszerkesztő minden richText mezőben:
   // állandó eszköztár felül + a "/" beszúró menüben elérhető saját elemek.

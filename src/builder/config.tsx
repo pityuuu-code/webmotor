@@ -2,6 +2,8 @@ import type { Config } from '@measured/puck'
 import Image from 'next/image'
 import React from 'react'
 
+import { ContactForm } from '../components/ContactForm'
+
 /**
  * A vizuális oldalépítő (Puck) szekciókészlete.
  *
@@ -237,6 +239,193 @@ export const puckConfig: Config = {
           </div>
         )
       },
+    },
+
+    Arlista: {
+      label: 'Árlista',
+      fields: {
+        heading: { type: 'text', label: 'Címsor' },
+        items: {
+          type: 'array',
+          label: 'Csomagok',
+          getItemSummary: (item: { name?: string }) => item?.name || 'Csomag',
+          arrayFields: {
+            name: { type: 'text', label: 'Csomag neve' },
+            price: { type: 'text', label: 'Ár (pl. 29 900 Ft)' },
+            period: { type: 'text', label: 'Időszak (pl. /hó) – üresen hagyható' },
+            features: { type: 'textarea', label: 'Mit tartalmaz? (soronként egy pont)' },
+            highlighted: {
+              type: 'radio',
+              label: 'Kiemelt csomag?',
+              options: [
+                { label: 'Nem', value: false },
+                { label: 'Igen', value: true },
+              ],
+            },
+            buttonLabel: { type: 'text', label: 'Gomb felirata – üresen nincs gomb' },
+            buttonUrl: { type: 'text', label: 'Gomb linkje' },
+          },
+        },
+      },
+      defaultProps: {
+        heading: 'Áraink',
+        items: [
+          {
+            name: 'Alap',
+            price: '29 900 Ft',
+            period: '/hó',
+            features: 'Első pont\nMásodik pont',
+            highlighted: false,
+            buttonLabel: 'Ezt választom',
+            buttonUrl: '/kapcsolat',
+          },
+          {
+            name: 'Népszerű',
+            price: '49 900 Ft',
+            period: '/hó',
+            features: 'Minden az Alapból\nHarmadik pont\nNegyedik pont',
+            highlighted: true,
+            buttonLabel: 'Ezt választom',
+            buttonUrl: '/kapcsolat',
+          },
+        ],
+      },
+      render: ({ heading, items }) => (
+        <section className="shell b-pricing">
+          {heading && <h2>{heading}</h2>}
+          <div className="b-pricing-grid">
+            {(
+              items as {
+                name?: string
+                price?: string
+                period?: string
+                features?: string
+                highlighted?: boolean
+                buttonLabel?: string
+                buttonUrl?: string
+              }[]
+            )?.map((item, i) => (
+              <div key={i} className={`b-price-card${item.highlighted ? ' highlighted' : ''}`}>
+                <h3>{item.name}</h3>
+                <p className="b-price">
+                  {item.price}
+                  {item.period && <span className="b-price-period">{item.period}</span>}
+                </p>
+                <ul>
+                  {String(item.features ?? '')
+                    .split('\n')
+                    .map((line) => line.trim())
+                    .filter(Boolean)
+                    .map((line, j) => (
+                      <li key={j}>{line}</li>
+                    ))}
+                </ul>
+                {item.buttonLabel && (
+                  <a className={`button${item.highlighted ? '' : ' ghost'}`} href={item.buttonUrl || '#'}>
+                    {item.buttonLabel}
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      ),
+    },
+
+    Velemenyek: {
+      label: 'Vélemények',
+      fields: {
+        heading: { type: 'text', label: 'Címsor' },
+        items: {
+          type: 'array',
+          label: 'Vélemények',
+          getItemSummary: (item: { name?: string }) => item?.name || 'Vélemény',
+          arrayFields: {
+            quote: { type: 'textarea', label: 'Idézet' },
+            name: { type: 'text', label: 'Név' },
+            role: { type: 'text', label: 'Titulus / cég – üresen hagyható' },
+          },
+        },
+      },
+      defaultProps: {
+        heading: 'Ezt mondják rólunk',
+        items: [
+          { quote: 'Nagyon elégedettek vagyunk a közös munkával.', name: 'Minta Anna', role: 'ügyvezető, Minta Kft.' },
+          { quote: 'Gyors, rugalmas, profi csapat.', name: 'Példa Péter', role: '' },
+        ],
+      },
+      render: ({ heading, items }) => (
+        <section className="shell b-quotes">
+          {heading && <h2>{heading}</h2>}
+          <div className="b-quotes-grid">
+            {(items as { quote?: string; name?: string; role?: string }[])?.map((item, i) => (
+              <figure key={i} className="b-quote">
+                <blockquote>„{item.quote}”</blockquote>
+                <figcaption>
+                  <strong>{item.name}</strong>
+                  {item.role && <span> – {item.role}</span>}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      ),
+    },
+
+    Gyik: {
+      label: 'GYIK (kérdések és válaszok)',
+      fields: {
+        heading: { type: 'text', label: 'Címsor' },
+        items: {
+          type: 'array',
+          label: 'Kérdések',
+          getItemSummary: (item: { question?: string }) => item?.question || 'Kérdés',
+          arrayFields: {
+            question: { type: 'text', label: 'Kérdés' },
+            answer: { type: 'textarea', label: 'Válasz' },
+          },
+        },
+      },
+      defaultProps: {
+        heading: 'Gyakori kérdések',
+        items: [
+          { question: 'Hogyan zajlik a közös munka?', answer: 'Ide jön a válasz.' },
+          { question: 'Mennyi idő alatt készül el?', answer: 'Ide jön a válasz.' },
+        ],
+      },
+      // A <details>/<summary> natív HTML: JavaScript nélkül is nyílik-csukódik.
+      render: ({ heading, items }) => (
+        <section className="shell pb-text b-faq">
+          {heading && <h2>{heading}</h2>}
+          {(items as { question?: string; answer?: string }[])?.map((item, i) => (
+            <details key={i}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </section>
+      ),
+    },
+
+    Kapcsolat: {
+      label: 'Kapcsolatűrlap',
+      fields: {
+        heading: { type: 'text', label: 'Címsor' },
+        text: { type: 'textarea', label: 'Bevezető szöveg – üresen hagyható' },
+        successMessage: { type: 'text', label: 'Sikeres küldés üzenete' },
+      },
+      defaultProps: {
+        heading: 'Írj nekünk!',
+        text: '',
+        successMessage: 'Köszönjük! Hamarosan válaszolunk.',
+      },
+      render: ({ heading, text, successMessage }) => (
+        <section className="shell pb-text b-contact">
+          {heading && <h2>{heading}</h2>}
+          {text && <p>{text}</p>}
+          <ContactForm successMessage={successMessage} />
+        </section>
+      ),
     },
 
     Terkoz: {

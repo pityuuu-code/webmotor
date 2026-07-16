@@ -9,7 +9,8 @@ Saját fejlesztésű, SEO-központú tartalomkezelő motor. **Next.js 16 + Paylo
 - **SEO alapfelszereltség**: cikkenkénti meta cím/leírás/OG-kép/canonical/noindex, automatikus `sitemap.xml` és `robots.txt`, Schema.org Article JSON-LD, 301-es átirányítás-kezelő, automatikus képméretezés, Search Console hitelesítő mező.
 - **Integrációs központ**: Google Tag Manager egy kattintással, EU-kompatibilis süti-sáv (Google Consent Mode v2), közösségi linkek, lebegő WhatsApp-gomb.
 - **Élő előnézet**: a cikk/oldal szerkesztése közben oldalt látod a valódi megjelenést az aktív témával, mobil/tablet/asztali nézetben – gépelés közben, kb. másodperces késéssel frissül.
-- **Vizuális oldalépítő (Puck)**: az oldalak húzd-és-ejtsd módon, kész szekciókból is összerakhatók (hero, szöveg, kép, kártyák, CTA, videó, térköz) a bejelentkezéshez kötött **/builder** felületen. A szekciók a témák stílusát öröklik, így témaváltáskor ezek az oldalak is átöltöznek.
+- **Vizuális oldalépítő (Puck)**: az oldalak húzd-és-ejtsd módon, kész szekciókból is összerakhatók (hero, szöveg, kép, kártyák, CTA, videó, árlista, vélemények, GYIK, kapcsolatűrlap, térköz) a bejelentkezéshez kötött **/builder** felületen. A szekciók a témák stílusát öröklik, így témaváltáskor ezek az oldalak is átöltöznek. A *Vázlat mentése* gombbal publikálás nélkül is menthetsz – az eredmény a *Vázlat-előnézet* linkkel nézhető meg, élesíteni a *Publish* gomb fog.
+- **Kapcsolatűrlap + Beérkezett üzenetek**: az oldalépítő „Kapcsolatűrlap" szekciója beépített spam-védelemmel (honeypot) menti az üzeneteket az Admin → *Beérkezett üzenetek* alá – e-mail-fiók bekötése nélkül is működik.
 - **Menükezelő** (Admin → *Menük*): fejléc- és láblécmenü, menüpontok húzással rendezhető sorrendben, belső oldalra vagy egyéni URL-re mutató linkekkel – mint a WP Megjelenés → Menük.
 - **Magyar admin felület** (angol fallbackkel).
 - **Élesre kész alapok**: S3-kompatibilis médiatárolás (AWS S3, Cloudflare R2, MinIO, Supabase…) – a `.env`-ben megadott hozzáféréssel magától bekapcsol; adatbázis-migrációk éles telepítéshez (`pnpm migrate`).
@@ -57,7 +58,9 @@ A táblákat a Payload fejlesztői módban automatikusan létrehozza és szinkro
 
 **Élő előnézet:** a cikk szerkesztőjében kattints a jobb felső sarok melletti *Élő előnézet* (szem ikonos) fülre – a képernyő kettéválik, jobb oldalt a cikk látszik a valódi kinézetében, és gépelés közben frissül. Felül átválthatsz mobil/tablet/asztali nézetre.
 
-**Oldal összerakása az oldalépítőben:** 1. Admin → *Oldalak* → *Új létrehozása*: adj címet, a jobb oldali sávban a *Szerkesztési mód* legyen „Vizuális oldalépítő", majd **Közzététel**. 2. Nyisd meg a **/builder** címet (pl. http://localhost:3000/builder), és kattints az oldalnál a *Szerkesztés az építőben* gombra. 3. Bal oldalt a szekciók listája – húzd be őket középre, kattints rájuk a szövegek/képek átírásához, végül jobb felül **Publish**. Az oldalépítő csak bejelentkezve érhető el.
+**Oldal összerakása az oldalépítőben:** 1. Admin → *Oldalak* → *Új létrehozása*: adj címet, a jobb oldali sávban a *Szerkesztési mód* legyen „Vizuális oldalépítő", majd **Közzététel**. 2. Nyisd meg a **/builder** címet (pl. http://localhost:3000/builder), és kattints az oldalnál a *Szerkesztés az építőben* gombra. 3. Bal oldalt a szekciók listája – húzd be őket középre, kattints rájuk a szövegek/képek átírásához. Menteni kétféleképp lehet: a **Vázlat mentése** gomb publikálás nélkül ment (a látogatók a régi változatot látják, te a *Vázlat-előnézet* linken nézheted az újat), a **Publish** gomb pedig ment és azonnal élesít. Az oldalépítő csak bejelentkezve érhető el.
+
+**Beérkezett üzenetek:** ha az oldaladon van „Kapcsolatűrlap" szekció, a beküldött üzenetek az Admin → *Beérkezett üzenetek* alatt gyűlnek (név, e-mail, üzenet, melyik oldalról jött). A kitöltött honeypot-mezős (bot-) beküldéseket a motor csendben eldobja.
 
 **Menü szerkesztése:** Admin → *Menük*. Menüpont hozzáadása a gombbal (felirat + belső oldal vagy egyéni link), a sorrend a bal oldali fogantyúval húzva rendezhető, a fejléc és a lábléc külön fülön van. Mentés után azonnal frissül az oldalon.
 
@@ -198,5 +201,5 @@ pnpm migrate:create ertelmes-nev
 2. ~~Keresés az oldalon (Postgres full-text).~~ ✅ Kész (v0.3.0).
 3. Hírlevél-blokk + feliratkozás-kezelés.
 4. Automatikus közösségi posztolás publikáláskor (Meta Graph API, LinkedIn API) `afterChange` hookból.
-5. Az oldalépítő szekciókészletének bővítése (árlista, vélemények, GYIK, kapcsolatűrlap) és vázlat-mentés a builderben.
+5. ~~Az oldalépítő szekciókészletének bővítése (árlista, vélemények, GYIK, kapcsolatűrlap) és vázlat-mentés a builderben.~~ ✅ Kész (v0.4.0).
 6. Több oldal kiszolgálása egy motorból (multi-tenant): `Sites` kollekció + domain-alapú témaválasztás.
