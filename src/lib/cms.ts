@@ -110,10 +110,15 @@ function ekezetlenit(szo: string): string {
   return out
 }
 
-export async function searchArticles(
+/** Egy keresési találat: cikk vagy oldal, pontszám szerinti sorrendben. */
+export type SearchHit =
+  | { type: 'article'; article: ArticleDoc }
+  | { type: 'page'; page: PageDoc }
+
+export async function searchContent(
   rawQuery: string,
   options?: { limit?: number },
-): Promise<ArticleDoc[]> {
+): Promise<SearchHit[]> {
   const payload = await client()
 
   // Csak betűk/számok maradnak; max 8 szó, mind kötelező (ÉS kapcsolat), prefixként.
@@ -127,13 +132,16 @@ export async function searchArticles(
   const prefixQuery = words.map((w) => `${ekezetlenit(w)}:*`).join(' & ')
   const limit = options?.limit ?? 24
   const site = await getCurrentSite()
-  // Multi-tenant: csak az aktuális weboldal cikkei között keresünk.
+  // Multi-tenant: csak az aktuális weboldal tartalmai között keresünk.
   const siteCond = site ? sql`and site_id = ${site.id}` : sql`and site_id is null`
 
-  const db = (payload.db as unknown as { drizzle: { execute: (q: unknown) => Promise<{ rows: { id: number | string }[] }> } }).drizzle
+  const db = (payload.db as unknown as { drizzle: { execute: (q: unknown) => Promise<{ rows: { tipus: string; id: number | string }[] }> } }).drizzle
+  // Cikkek: cím (A) + kivonat (B) + törzs (C). Oldalak: cím (A) + szövegszerkesztős
+  // tartalom (C) + az oldalépítő (Puck) elrendezésének minden szöveges értéke (C).
   const result = await db.execute(sql`
-    with cikkek as (
+    with talalatok as (
       select
+        'article' as tipus,
         id,
         setweight(to_tsvector('simple', translate(lower(coalesce(title, '')), 'áéíóöőúüű', 'aeiooouuu')), 'A')
           || setweight(to_tsvector('simple', translate(lower(coalesce(excerpt, '')), 'áéíóöőúüű', 'aeiooouuu')), 'B')
@@ -143,31 +151,70 @@ export async function searchArticles(
             || coalesce(jsonb_path_query_array(content, '$.**.text')::text, '')) as szotovezett
       from articles
       where _status = 'published' ${siteCond}
+      union all
+      select
+        'page' as tipus,
+        id,
+        setweight(to_tsvector('simple', translate(lower(coalesce(title, '')), 'áéíóöőúüű', 'aeiooouuu')), 'A')
+          || setweight(to_tsvector('simple', translate(lower(coalesce(jsonb_path_query_array(content, '$.**.text')::text, '')), 'áéíóöőúüű', 'aeiooouuu')), 'C')
+          || setweight(to_tsvector('simple', translate(lower(coalesce(jsonb_path_query_array(layout, '$.** ? (@.type() == "string")')::text, '')), 'áéíóöőúüű', 'aeiooouuu')), 'C') as vektor,
+        to_tsvector('hungarian',
+          coalesce(title, '') || ' '
+            || coalesce(jsonb_path_query_array(content, '$.**.text')::text, '') || ' '
+            || coalesce(jsonb_path_query_array(layout, '$.** ? (@.type() == "string")')::text, '')) as szotovezett
+      from pages
+      where _status = 'published' ${siteCond}
     )
-    select id,
+    select tipus, id,
       ts_rank(vektor, to_tsquery('simple', ${prefixQuery}))
         + ts_rank(szotovezett, websearch_to_tsquery('hungarian', ${rawQuery})) as pontszam
-    from cikkek
+    from talalatok
     where vektor @@ to_tsquery('simple', ${prefixQuery})
        or szotovezett @@ websearch_to_tsquery('hungarian', ${rawQuery})
     order by pontszam desc
     limit ${limit}
   `)
 
-  const ids = result.rows.map((row) => Number(row.id))
-  if (ids.length === 0) return []
+  const sorrend = result.rows.map((row) => ({ tipus: row.tipus, id: Number(row.id) }))
+  if (sorrend.length === 0) return []
+  const articleIds = sorrend.filter((r) => r.tipus === 'article').map((r) => r.id)
+  const pageIds = sorrend.filter((r) => r.tipus === 'page').map((r) => r.id)
 
   // A teljes dokumentumokat a szokásos Payload-lekérdezés adja (jogosultság, depth),
   // a sorrendet a keresési pontszám szerint állítjuk vissza.
-  const found = await payload.find({
-    collection: 'articles' as never,
-    where: { id: { in: ids } },
-    depth: 1,
-    limit: ids.length,
-  })
-  const docs = found.docs as unknown as ArticleDoc[]
-  const byId = new Map(docs.map((doc) => [Number(doc.id), doc]))
-  return ids.map((id) => byId.get(id)).filter((doc): doc is ArticleDoc => Boolean(doc))
+  const [articles, pages] = await Promise.all([
+    articleIds.length
+      ? payload.find({
+          collection: 'articles' as never,
+          where: { id: { in: articleIds } },
+          depth: 1,
+          limit: articleIds.length,
+        })
+      : { docs: [] },
+    pageIds.length
+      ? payload.find({
+          collection: 'pages' as never,
+          where: { id: { in: pageIds } },
+          depth: 0,
+          limit: pageIds.length,
+        })
+      : { docs: [] },
+  ])
+  const articleById = new Map(
+    (articles.docs as unknown as ArticleDoc[]).map((doc) => [Number(doc.id), doc]),
+  )
+  const pageById = new Map((pages.docs as unknown as PageDoc[]).map((doc) => [Number(doc.id), doc]))
+
+  return sorrend
+    .map((row): SearchHit | null => {
+      if (row.tipus === 'article') {
+        const article = articleById.get(row.id)
+        return article ? { type: 'article', article } : null
+      }
+      const page = pageById.get(row.id)
+      return page ? { type: 'page', page } : null
+    })
+    .filter((hit): hit is SearchHit => hit !== null)
 }
 
 export async function getArticleBySlug(

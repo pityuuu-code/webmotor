@@ -4,6 +4,17 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.6.0 — 2026-07-16 (keresés az oldalakban is — az S8 sprint lezárása)
+- A keresés mostantól az OLDALAKBAN is keres, nem csak a cikkekben: a
+  szövegszerkesztős tartalomban és az oldalépítős (Puck) oldalak
+  szekció-szövegeiben egyaránt
+- Egyesített, pontszám szerint rangsorolt találati lista (cikk- és
+  oldal-kártyák vegyesen), oldalanként (multi-tenant) szűrve
+- Médiafájl-helyreállítás: a mappaköltözéskor elveszett képek (logó)
+  visszatöltve az eredeti forrásokból; a tanulság beépítve az S4/S6 tervekbe
+- 2 új integrációs teszt (szövegszerkesztős + oldalépítős oldal keresése);
+  élő böngészős ellenőrzés elvégezve
+
 ## v0.5.0 — 2026-07-16 (multi-tenant: több weboldal egy motorból)
 - Weboldalak kollekció: domainek, saját név/téma/logó/lábléc, mérőkódok,
   közösségi linkek és saját fejléc-/láblécmenük oldalanként

@@ -3,7 +3,7 @@ import config from '@/payload.config'
 
 import { describe, it, beforeAll, afterAll, expect } from 'vitest'
 
-import { getArticles, searchArticles, siteContentFilter } from '@/lib/cms'
+import { getArticles, searchContent, siteContentFilter } from '@/lib/cms'
 import type { SiteDoc } from '@/lib/types'
 
 let payload: Payload
@@ -83,8 +83,8 @@ describe('Multi-tenant (Weboldalak)', () => {
   })
 
   it('a keresés is az aktuális oldalra szűr', async () => {
-    const results = await searchArticles('mokuska')
-    const titles = results.map((d) => d.title)
+    const hits = await searchContent('mokuska')
+    const titles = hits.map((hit) => (hit.type === 'article' ? hit.article.title : hit.page.title))
     expect(titles).toContain('Mokuska az alapertelmezett oldalon')
     expect(titles).not.toContain('Mokuska a teszt weboldalon')
   })

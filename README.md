@@ -14,7 +14,7 @@ Saját fejlesztésű, SEO-központú tartalomkezelő motor. **Next.js 16 + Paylo
 - **Menükezelő** (Admin → *Menük*): fejléc- és láblécmenü, menüpontok húzással rendezhető sorrendben, belső oldalra vagy egyéni URL-re mutató linkekkel – mint a WP Megjelenés → Menük.
 - **Magyar admin felület** (angol fallbackkel).
 - **Élesre kész alapok**: S3-kompatibilis médiatárolás (AWS S3, Cloudflare R2, MinIO, Supabase…) – a `.env`-ben megadott hozzáféréssel magától bekapcsol; adatbázis-migrációk éles telepítéshez (`pnpm migrate`).
-- **Keresés az oldalon** (Postgres full-text, magyarra hangolva): keresőmező a fejlécben + találati oldal a `/kereses` címen. Ékezetek nélkül is talál, a toldalékos alakokat is megtalálja (kutya → kutyák, kutyát), a címbeli találat előrébb rangsorol, mint a törzsbeli. A találati oldal noindex – a keresők nem indexelik. Beállítást nem igényel; külön adatbázis-index sem kell, több ezer cikkig gyors.
+- **Keresés az oldalon** (Postgres full-text, magyarra hangolva): keresőmező a fejlécben + találati oldal a `/kereses` címen. A cikkekben ÉS az oldalakban is keres – az oldalépítővel készült oldalak szekció-szövegeiben is. Ékezetek nélkül is talál, a toldalékos alakokat is megtalálja (kutya → kutyák, kutyát), a címbeli találat előrébb rangsorol, mint a törzsbeli. A találati oldal noindex – a keresők nem indexelik. Beállítást nem igényel; külön adatbázis-index sem kell, több ezer cikkig gyors.
 - **Több weboldal egy motorból (multi-tenant)**: az Admin → *Weboldalak* alatt felvett oldalak saját domainen, saját névvel, témával, menükkel, mérőkódokkal és saját tartalommal futnak – egyetlen telepítésből. A sitemap, a robots.txt és a canonical URL-ek domainenként készülnek. Részletek lejjebb.
 
 ---
