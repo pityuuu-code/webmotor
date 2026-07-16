@@ -12,6 +12,7 @@ Saját fejlesztésű, SEO-központú tartalomkezelő motor. **Next.js 16 + Paylo
 - **Vizuális oldalépítő (Puck)**: az oldalak húzd-és-ejtsd módon, kész szekciókból is összerakhatók (hero, szöveg, kép, kártyák, CTA, videó, térköz) a bejelentkezéshez kötött **/builder** felületen. A szekciók a témák stílusát öröklik, így témaváltáskor ezek az oldalak is átöltöznek.
 - **Menükezelő** (Admin → *Menük*): fejléc- és láblécmenü, menüpontok húzással rendezhető sorrendben, belső oldalra vagy egyéni URL-re mutató linkekkel – mint a WP Megjelenés → Menük.
 - **Magyar admin felület** (angol fallbackkel).
+- **Élesre kész alapok**: S3-kompatibilis médiatárolás (AWS S3, Cloudflare R2, MinIO, Supabase…) – a `.env`-ben megadott hozzáféréssel magától bekapcsol; adatbázis-migrációk éles telepítéshez (`pnpm migrate`).
 
 ---
 
@@ -39,7 +40,7 @@ Ezután:
 - **http://localhost:3000/admin** → első látogatáskor itt hozod létre az első admin felhasználót,
 - **http://localhost:3000** → a látogatói oldal.
 
-A táblákat a Payload fejlesztői módban automatikusan létrehozza és szinkronban tartja (élesben migrációkat használj: `pnpm payload migrate:create`).
+A táblákat a Payload fejlesztői módban automatikusan létrehozza és szinkronban tartja; élesben migrációk futnak (lásd az *Adatbázis-migrációk* fejezetet).
 
 > **Fontos – admin komponens-jegyzék (importMap):** ha a `payload.config.ts`-ben új szerkesztő-funkciót vagy admin-komponenst kapcsolsz be, a `src/app/(payload)/admin/importMap.js`-t újra kell generálni, különben az adott mező nem jelenik meg az adminban. A `pnpm dev` és a `pnpm build` ezt már automatikusan megteszi; kézzel: `pnpm generate:importmap`.
 
@@ -159,15 +160,40 @@ src/
 
 ---
 
+## Adatbázis-migrációk (élesben)
+
+Két üzemmód van, és **soha nem szabad keverni őket ugyanazon az adatbázison**:
+
+- **Fejlesztésben (pnpm dev):** a Payload *push* módban magától létrehozza és szinkronban tartja a táblákat – nincs teendő.
+- **Élesben:** a sémát verziózott migrációk kezelik (`src/migrations/`). Az éles adatbázist az első telepítéskor is a migrációk hozzák létre.
+
+**Munkafolyamat, amikor a séma változik** (új kollekció, új mező stb.):
+
+```bash
+# 1. Fejleszd le a változást (pnpm dev közben a helyi DB magától követi)
+# 2. Készíts migrációt, beszédes névvel:
+pnpm migrate:create ertelmes-nev
+# 3. Commitold a src/migrations/ alá került fájlokat a kódváltozással együtt
+```
+
+**Éles telepítéskor** a migrációkat az indulás/build előtt kell lefuttatni:
+
+- **Vercel:** a projekt *Build Command*-ja legyen `pnpm ci` (ez előbb migrál, aztán buildel).
+- **VPS/Docker:** telepítéskor futtasd le: `pnpm migrate` (állapot-ellenőrzés: `pnpm migrate:status`), utána indítsd az appot.
+
+> **Figyelem:** a fejlesztői `pnpm dev`-et soha ne irányítsd az éles adatbázisra – a push mód megkerüli a migrációkat, és a kettő összeakad.
+
+---
+
 ## Éles üzembe helyezés (röviden)
 
-- **Legegyszerűbb út:** Vercel + kezelt Postgres (pl. Neon, Supabase). Állítsd be a `DATABASE_URL`, `PAYLOAD_SECRET` (új, hosszú kulcs!) és `NEXT_PUBLIC_SERVER_URL` (a végleges domain) változókat.
-- **VPS-út:** a repóban lévő `Dockerfile` + Postgres ugyanazon a gépen.
-- **Feltöltött képek:** jelenleg a helyi fájlrendszerre kerülnek. Vercel-deploynál ez nem marad meg – első éles lépésként kösd be az S3-kompatibilis tárolást a hivatalos `@payloadcms/storage-s3` pluginnal (kb. 15 sor a `payload.config.ts`-ben).
+- **Legegyszerűbb út:** Vercel + kezelt Postgres (pl. Neon, Supabase). Állítsd be a `DATABASE_URL`, `PAYLOAD_SECRET` (új, hosszú kulcs!) és `NEXT_PUBLIC_SERVER_URL` (a végleges domain) változókat, a *Build Command* pedig `pnpm ci` legyen (migrációk + build).
+- **VPS-út:** a repóban lévő `Dockerfile` + Postgres ugyanazon a gépen; telepítéskor `pnpm migrate`.
+- **Feltöltött képek – S3 (éleshez kötelező):** töltsd ki a `.env`-ben az `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` (és AWS-nél az `S3_REGION`, R2/MinIO-nál az `S3_ENDPOINT`) változókat – ettől a feltöltések S3-ba kerülnek, a képek kiszolgálása változatlanul a `/api/media/...` útvonalon történik, más beállítás nem kell. Üres S3-adatokkal (pl. fejlesztésben) a képek a helyi fájlrendszerre mennek. Vercel-deploynál az S3 kitöltése nélkül a feltöltött képek **elvesznek** minden újratelepítésnél.
 
 ## Fejlesztési térkép (javasolt sorrendben)
 
-1. S3 médiatárolás (éleshez kötelező) és éles adatbázis-migrációk.
+1. ~~S3 médiatárolás (éleshez kötelező) és éles adatbázis-migrációk.~~ ✅ Kész (v0.2.0).
 2. Keresés az oldalon (Postgres full-text).
 3. Hírlevél-blokk + feliratkozás-kezelés.
 4. Automatikus közösségi posztolás publikáláskor (Meta Graph API, LinkedIn API) `afterChange` hookból.

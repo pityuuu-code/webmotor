@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 import { ArticleCard } from '@/components/SiteChrome'
@@ -23,7 +24,7 @@ export default async function HomePage() {
           <div className="empty">
             <h2>Még nincs publikált cikk</h2>
             <p>
-              Lépj be az <a href="/admin">admin felületre</a>, hozd létre az első cikket, majd a
+              Lépj be az <Link href="/admin">admin felületre</Link>, hozd létre az első cikket, majd a
               jobb felső sarokban kattints a Közzététel gombra.
             </p>
           </div>

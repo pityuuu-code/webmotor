@@ -1,5 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { BlocksFeature, FixedToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { en } from '@payloadcms/translations/languages/en'
 import { hu } from '@payloadcms/translations/languages/hu'
 import path from 'path'
@@ -19,6 +20,13 @@ import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// S3-kompatibilis médiatárolás: csak akkor kapcsol be, ha a hozzáférési adatok
+// meg vannak adva (.env). Nélkülük a képek a helyi fájlrendszerre kerülnek,
+// így a fejlesztés változatlanul, S3 nélkül is működik.
+const s3Enabled = Boolean(
+  process.env.S3_BUCKET && process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY,
+)
 
 export default buildConfig({
   // Szándékosan NINCS serverURL megadva: így a Payload a képeket relatív
@@ -72,7 +80,33 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    // Éles migrációk helye (pnpm migrate:create / pnpm migrate).
+    // Fejlesztésben marad a "push" mód: a táblákat a Payload automatikusan szinkronban tartja.
+    migrationDir: path.resolve(dirname, 'migrations'),
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    s3Storage({
+      enabled: s3Enabled,
+      // A prefix-mező akkor is része a sémának, ha az S3 ki van kapcsolva —
+      // így a helyi és az éles adatbázis szerkezete azonos (migrációk!).
+      alwaysInsertFields: true,
+      collections: {
+        media: { prefix: 'media' },
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        region: process.env.S3_REGION || 'auto',
+        // Csak S3-kompatibilis tárolónál kell (Cloudflare R2, MinIO, Supabase…);
+        // valódi AWS S3-nál hagyd üresen az S3_ENDPOINT-ot.
+        ...(process.env.S3_ENDPOINT
+          ? { endpoint: process.env.S3_ENDPOINT, forcePathStyle: true }
+          : {}),
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+      },
+    }),
+  ],
 })

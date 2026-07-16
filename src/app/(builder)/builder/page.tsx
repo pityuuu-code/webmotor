@@ -34,8 +34,8 @@ export default async function BuilderIndexPage() {
     <main className="shell builder-index">
       <h1>Oldalépítő</h1>
       <p className="builder-hint">
-        Válaszd ki a szerkeszteni kívánt oldalt. Új oldalt az <a href="/admin/collections/pages">
-        admin felületen</a> hozhatsz létre – a jobb oldali sávban állítsd a szerkesztési módot
+        Válaszd ki a szerkeszteni kívánt oldalt. Új oldalt az <Link href="/admin/collections/pages">
+        admin felületen</Link> hozhatsz létre – a jobb oldali sávban állítsd a szerkesztési módot
         „Vizuális oldalépítő”-re.
       </p>
 
@@ -43,8 +43,8 @@ export default async function BuilderIndexPage() {
         <div className="empty">
           <h2>Még nincs egyetlen oldal sem</h2>
           <p>
-            Hozz létre egyet az <a href="/admin/collections/pages/create">adminban</a>, aztán gyere
-            vissza ide.
+            Hozz létre egyet az <Link href="/admin/collections/pages/create">adminban</Link>, aztán
+            gyere vissza ide.
           </p>
         </div>
       ) : (

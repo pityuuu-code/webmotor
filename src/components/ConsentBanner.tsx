@@ -16,7 +16,6 @@ function writeConsent(value: 'granted' | 'denied') {
 function updateGtag(value: 'granted' | 'denied') {
   const w = window as unknown as { dataLayer?: unknown[] }
   w.dataLayer = w.dataLayer || []
-  // eslint-disable-next-line prefer-rest-params
   function gtag(..._args: unknown[]) {
     // A GTM a dataLayer "arguments" objektumait várja, ezért nem spread-elünk.
     // eslint-disable-next-line prefer-rest-params
@@ -41,6 +40,9 @@ export function ConsentBanner({ enabled }: { enabled: boolean }) {
     if (stored === 'granted' || stored === 'denied') {
       updateGtag(stored)
     } else {
+      // A süti csak a kliensen olvasható, ezért a sáv láthatóságát muszáj
+      // hydration után, effektben eldönteni – különben szerver/kliens eltérés lenne.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true)
     }
   }, [enabled])

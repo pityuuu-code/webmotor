@@ -25,6 +25,9 @@ export function DraftBar() {
   return (
     <div className="draft-bar">
       <span>Vázlat-előnézetet látsz – ez a változat még nincs publikálva.</span>
+      {/* Szándékosan sima <a>: a /next/exit-preview egy mellékhatásos route handler,
+          a <Link /> előtöltése már rámutatáskor kiléptetne az előnézetből. */}
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a href="/next/exit-preview">Kilépés az előnézetből</a>
     </div>
   )
