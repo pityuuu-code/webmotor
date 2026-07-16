@@ -218,9 +218,9 @@ pnpm migrate:create ertelmes-nev
 
 1. ~~S3 médiatárolás (éleshez kötelező) és éles adatbázis-migrációk.~~ ✅ Kész (v0.2.0).
 2. ~~Keresés az oldalon (Postgres full-text).~~ ✅ Kész (v0.3.0).
-3. Hírlevél-blokk + feliratkozás-kezelés.
-4. Automatikus közösségi posztolás publikáláskor (Meta Graph API, LinkedIn API) `afterChange` hookból.
-5. ~~Az oldalépítő szekciókészletének bővítése (árlista, vélemények, GYIK, kapcsolatűrlap) és vázlat-mentés a builderben.~~ ✅ Kész (v0.4.0).
-6. ~~Több oldal kiszolgálása egy motorból (multi-tenant): `Sites` kollekció + domain-alapú témaválasztás.~~ ✅ Kész (v0.5.0).
+3. ~~Hírlevél-blokk + feliratkozás-kezelés.~~ *Kihagyva (döntés alapján).*
+4. ~~Az oldalépítő szekciókészletének bővítése (árlista, vélemények, GYIK, kapcsolatűrlap) és vázlat-mentés a builderben.~~ ✅ Kész (v0.4.0).
+5. ~~Több oldal kiszolgálása egy motorból (multi-tenant): `Sites` kollekció + domain-alapú témaválasztás.~~ ✅ Kész (v0.5.0).
+6. Automatikus közösségi posztolás publikáláskor (Meta Graph API, LinkedIn API) `afterChange` hookból. *Utolsó lépcsőre halasztva – Meta/LinkedIn fejlesztői hozzáférés kell hozzá.*
 
-Állás: 1., 2., 5., 6. kész; a 3. (hírlevél) döntés alapján kihagyva. Hátravan a 4. (automatikus közösségi posztolás – Meta/LinkedIn API-hozzáférést igényel); további természetes irány a szerkesztői jogosultságok oldalankénti szétválasztása.
+Állás: 1., 2., 4., 5. kész; a 3. (hírlevél) kihagyva. Egyedül a 6. (közösségi posztolás) van hátra, szándékosan a végére halasztva. Nincs más tétel a térképen – új irányt (pl. szerkesztői jogosultságok oldalankénti szétválasztása) külön kell kijelölni.
