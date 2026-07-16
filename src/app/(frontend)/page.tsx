@@ -4,8 +4,8 @@ import React from 'react'
 import { ArticleCard } from '@/components/SiteChrome'
 import { getArticles, getSettings } from '@/lib/cms'
 
-// ISR: a lista legfeljebb 60 mp-ig lehet "régi" – publikáláskor a hook azonnal frissíti.
-export const revalidate = 60
+// Multi-tenant: a kiszolgált oldal a kérés domainjétől függ, ezért minden
+// kérés frissen renderelődik (nincs ISR) – a tartalom mindig azonnal friss.
 
 export default async function HomePage() {
   const [settings, { docs: articles }] = await Promise.all([getSettings(), getArticles({ limit: 12 })])

@@ -6,9 +6,7 @@ import React from 'react'
 import { DraftBar, LivePreviewListener } from '@/components/LivePreview'
 import { PuckRender } from '@/components/PuckRender'
 import { RichContent } from '@/components/RichContent'
-import { getPageBySlug, getServerURL, resolveRedirect } from '@/lib/cms'
-
-export const revalidate = 60
+import { getBaseURL, getPageBySlug, resolveRedirect } from '@/lib/cms'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -20,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: page.seo?.metaTitle || page.title,
     description: page.seo?.metaDescription || undefined,
-    alternates: { canonical: page.seo?.canonicalUrl || `${getServerURL()}/${page.slug}` },
+    alternates: { canonical: page.seo?.canonicalUrl || `${await getBaseURL()}/${page.slug}` },
     robots: page.seo?.noIndex ? { index: false, follow: false } : undefined,
   }
 }

@@ -1,7 +1,9 @@
 import type { CollectionConfig } from 'payload'
 
+import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
 import { revalidateSite } from '../hooks/revalidate'
+import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
@@ -14,6 +16,7 @@ export const Categories: CollectionConfig = {
     read: () => true,
   },
   hooks: {
+    beforeValidate: [uniqueFieldPerSite('categories', 'slug', 'URL (slug)')],
     afterChange: [() => revalidateSite()],
   },
   fields: [
@@ -22,7 +25,6 @@ export const Categories: CollectionConfig = {
       label: 'Név',
       type: 'text',
       required: true,
-      unique: true,
     },
     {
       name: 'description',
@@ -31,5 +33,6 @@ export const Categories: CollectionConfig = {
       admin: { description: 'A kategória-oldal bevezetője és meta leírása.' },
     },
     slugField('name'),
+    siteField,
   ],
 }

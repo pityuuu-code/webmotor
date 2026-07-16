@@ -5,7 +5,7 @@ import React from 'react'
 import { ConsentBanner } from '@/components/ConsentBanner'
 import { Gtm } from '@/components/Gtm'
 import { SiteFooter, SiteHeader, WhatsAppButton } from '@/components/SiteChrome'
-import { getNavigation, getServerURL, getSettings } from '@/lib/cms'
+import { getBaseURL, getNavigation, getSettings } from '@/lib/cms'
 
 import './styles.css'
 
@@ -21,7 +21,7 @@ const grotesk = Space_Grotesk({ subsets: ['latin', 'latin-ext'], variable: '--fo
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings()
   return {
-    metadataBase: new URL(getServerURL()),
+    metadataBase: new URL(await getBaseURL()),
     title: {
       default: settings.tagline ? `${settings.siteName} – ${settings.tagline}` : settings.siteName,
       template: `%s | ${settings.siteName}`,

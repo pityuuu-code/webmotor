@@ -116,6 +116,15 @@ export interface NavLink {
   newTab?: boolean
 }
 
+/** Nyers menüpont, ahogy a Payload tárolja (Menük globál és Weboldalak kollekció). */
+export interface RawMenuItem {
+  label: string
+  linkType?: 'page' | 'custom' | null
+  page?: PageDoc | number | null
+  url?: string | null
+  newTab?: boolean | null
+}
+
 export type ThemeName = 'folyoirat' | 'studio' | 'magazin'
 
 export interface SiteSettingsDoc {
@@ -134,6 +143,18 @@ export interface SiteSettingsDoc {
     youtube?: string | null
     whatsapp?: string | null
   }
+}
+
+/**
+ * Egy weboldal a multi-tenant üzemben (Admin → Weboldalak). Az arculati mezői
+ * megegyeznek az Oldalbeállításokéval, így közvetlenül használható helyette.
+ */
+export interface SiteDoc extends SiteSettingsDoc {
+  id: number
+  name: string
+  domains?: { domain: string }[] | null
+  header?: RawMenuItem[] | null
+  footer?: RawMenuItem[] | null
 }
 
 /** Segéd: relációs mező feloldása (a Payload számként adja vissza, ha nincs depth). */

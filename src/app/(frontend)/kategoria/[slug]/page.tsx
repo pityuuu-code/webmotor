@@ -5,8 +5,6 @@ import React from 'react'
 import { ArticleCard } from '@/components/SiteChrome'
 import { getArticles, getCategoryBySlug } from '@/lib/cms'
 
-export const revalidate = 60
-
 type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

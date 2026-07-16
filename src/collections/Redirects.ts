@@ -1,5 +1,8 @@
 import type { CollectionConfig } from 'payload'
 
+import { siteField } from '../fields/site'
+import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
+
 export const Redirects: CollectionConfig = {
   slug: 'redirects',
   labels: { singular: 'Átirányítás', plural: 'Átirányítások' },
@@ -11,13 +14,16 @@ export const Redirects: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    beforeValidate: [uniqueFieldPerSite('redirects', 'from', 'régi útvonal')],
+  },
   fields: [
     {
       name: 'from',
       label: 'Régi útvonal',
       type: 'text',
       required: true,
-      unique: true,
+      index: true,
       admin: { description: 'Perjellel kezdődő útvonal, pl. /cikk/regi-cim' },
     },
     {
@@ -34,5 +40,6 @@ export const Redirects: CollectionConfig = {
       defaultValue: true,
       admin: { description: 'Bepipálva 301-es (végleges), kipipálva 307-es (ideiglenes) átirányítás.' },
     },
+    siteField,
   ],
 }

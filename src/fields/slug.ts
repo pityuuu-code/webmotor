@@ -13,11 +13,15 @@ export const slugify = (value: string): string =>
  * Slug mező gyárfüggvény. A megadott forrásmezőből (alapból: title)
  * automatikusan generálja az URL-t, de kézzel is felülírható.
  */
+/**
+ * Megjegyzés: a slug NEM adatbázis-szinten unique – multi-tenant üzemben két
+ * külön weboldalon lehet ugyanaz az URL (pl. mindkettőn /kapcsolat). Az
+ * oldalankénti egyediséget a uniqueFieldPerSite hook garantálja.
+ */
 export const slugField = (sourceField = 'title'): Field => ({
   name: 'slug',
   label: 'URL (slug)',
   type: 'text',
-  unique: true,
   index: true,
   admin: {
     position: 'sidebar',

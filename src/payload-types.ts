@@ -74,6 +74,7 @@ export interface Config {
     users: User;
     redirects: Redirect;
     'form-submissions': FormSubmission;
+    sites: Site;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
+    sites: SitesSelect<false> | SitesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -172,6 +174,10 @@ export interface Article {
    * Üresen hagyva a címből generálódik. Csak kisbetű, szám és kötőjel.
    */
   slug?: string | null;
+  /**
+   * Több weboldalas üzemben: melyik oldalon jelenjen meg. Üresen hagyva az alapértelmezett oldalé.
+   */
+  site?: (number | null) | Site;
   category?: (number | null) | Category;
   author?: (number | null) | User;
   /**
@@ -267,55 +273,91 @@ export interface Media {
   };
 }
 /**
- * A cikkek témakörei – minden kategória saját listaoldalt kap (/kategoria/slug).
+ * Több weboldal kiszolgálása egy motorból. A fő (alapértelmezett) oldalhoz NEM kell ide bejegyzés – azt az Oldalbeállítások és a Menük kezeli.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
+ * via the `definition` "sites".
  */
-export interface Category {
-  id: number;
-  name: string;
-  /**
-   * A kategória-oldal bevezetője és meta leírása.
-   */
-  description?: string | null;
-  /**
-   * Üresen hagyva a címből generálódik. Csak kisbetű, szám és kötőjel.
-   */
-  slug?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Az admin felület felhasználói. A cikkeknél szerzőként is megjelennek.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
+export interface Site {
   id: number;
   /**
-   * A cikkek szerzőjeként ez a név jelenik meg az oldalon.
+   * Csak az adminban látszik, pl. "Ügyfél Kft. honlapja".
    */
   name: string;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
+  /**
+   * Melyik domain(ek)en él ez az oldal – protokoll nélkül, pl. ugyfel.hu. Ha www-vel is használjátok, azt külön sorban vedd fel. Az első a fő domain: a sitemap és a canonical URL-ek erre épülnek.
+   */
+  domains: {
+    domain: string;
+    id?: string | null;
+  }[];
+  siteName: string;
+  /**
+   * A főoldal fejlécében és az alap meta leírásban jelenik meg.
+   */
+  tagline?: string | null;
+  /**
+   * Ha üres, az oldal neve jelenik meg szövegként.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Váltáskor az egész oldal kinézete átáll – a tartalomhoz nem kell hozzányúlni.
+   */
+  theme: 'folyoirat' | 'studio' | 'magazin';
+  footerText?: string | null;
+  /**
+   * Formátum: GTM-XXXXXXX. Ezen az egy konténeren keresztül köthető be a GA4, a Google Ads, a Meta Pixel, a TikTok Pixel és a LinkedIn Insight Tag – kódmódosítás nélkül.
+   */
+  gtmId?: string | null;
+  /**
+   * A Search Console "HTML-címke" hitelesítési módjánál kapott content érték (csak a kód, nem a teljes meta tag).
+   */
+  searchConsoleVerification?: string | null;
+  socials?: {
+    facebook?: string | null;
+    instagram?: string | null;
+    tiktok?: string | null;
+    linkedin?: string | null;
+    youtube?: string | null;
+    /**
+     * Nemzetközi formátumban, + és szóközök nélkül, pl. 36301234567. Kitöltve lebegő WhatsApp-gomb jelenik meg az oldalon.
+     */
+    whatsapp?: string | null;
+  };
+  /**
+   * Új menüpont a lenti gombbal, a sorrend a bal oldali fogantyúval húzva rendezhető.
+   */
+  header?:
     | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
+        label: string;
+        linkType?: ('page' | 'custom') | null;
+        page?: (number | null) | Page;
+        /**
+         * Pl. /kategoria/hirek vagy https://kulso-oldal.hu
+         */
+        url?: string | null;
+        newTab?: boolean | null;
+        id?: string | null;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  /**
+   * Új menüpont a lenti gombbal, a sorrend a bal oldali fogantyúval húzva rendezhető.
+   */
+  footer?:
+    | {
+        label: string;
+        linkType?: ('page' | 'custom') | null;
+        page?: (number | null) | Page;
+        /**
+         * Pl. /kategoria/hirek vagy https://kulso-oldal.hu
+         */
+        url?: string | null;
+        newTab?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Statikus oldalak: rólunk, kapcsolat, impresszum stb. A publikált oldal a /slug címen érhető el; a menübe az Admin → Menük alatt teheted ki.
@@ -358,6 +400,10 @@ export interface Page {
    */
   slug?: string | null;
   /**
+   * Több weboldalas üzemben: melyik oldalon jelenjen meg. Üresen hagyva az alapértelmezett oldalé.
+   */
+  site?: (number | null) | Site;
+  /**
    * Oldalépítő módban a tartalmat a /builder címen szerkesztheted (pl. http://localhost:3000/builder).
    */
   editorMode: 'richtext' | 'builder';
@@ -391,6 +437,61 @@ export interface Page {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * A cikkek témakörei – minden kategória saját listaoldalt kap (/kategoria/slug).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  /**
+   * A kategória-oldal bevezetője és meta leírása.
+   */
+  description?: string | null;
+  /**
+   * Üresen hagyva a címből generálódik. Csak kisbetű, szám és kötőjel.
+   */
+  slug?: string | null;
+  /**
+   * Több weboldalas üzemben: melyik oldalon jelenjen meg. Üresen hagyva az alapértelmezett oldalé.
+   */
+  site?: (number | null) | Site;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Az admin felület felhasználói. A cikkeknél szerzőként is megjelennek.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  /**
+   * A cikkek szerzőjeként ez a név jelenik meg az oldalon.
+   */
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
  * SEO-létfontosságú: ha egy cikk URL-je megváltozik, itt vedd fel a régi címet, hogy a Google-ranking ne vesszen el.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -410,6 +511,10 @@ export interface Redirect {
    * Bepipálva 301-es (végleges), kipipálva 307-es (ideiglenes) átirányítás.
    */
   permanent?: boolean | null;
+  /**
+   * Több weboldalas üzemben: melyik oldalon jelenjen meg. Üresen hagyva az alapértelmezett oldalé.
+   */
+  site?: (number | null) | Site;
   updatedAt: string;
   createdAt: string;
 }
@@ -482,6 +587,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'form-submissions';
         value: number | FormSubmission;
+      } | null)
+    | ({
+        relationTo: 'sites';
+        value: number | Site;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -535,6 +644,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   coverImage?: T;
   content?: T;
   slug?: T;
+  site?: T;
   category?: T;
   author?: T;
   publishedAt?: T;
@@ -560,6 +670,7 @@ export interface PagesSelect<T extends boolean = true> {
   content?: T;
   layout?: T;
   slug?: T;
+  site?: T;
   editorMode?: T;
   seo?:
     | T
@@ -582,6 +693,7 @@ export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   slug?: T;
+  site?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -679,6 +791,7 @@ export interface RedirectsSelect<T extends boolean = true> {
   from?: T;
   to?: T;
   permanent?: T;
+  site?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -691,6 +804,58 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
   email?: T;
   message?: T;
   path?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sites_select".
+ */
+export interface SitesSelect<T extends boolean = true> {
+  name?: T;
+  domains?:
+    | T
+    | {
+        domain?: T;
+        id?: T;
+      };
+  siteName?: T;
+  tagline?: T;
+  logo?: T;
+  theme?: T;
+  footerText?: T;
+  gtmId?: T;
+  searchConsoleVerification?: T;
+  socials?:
+    | T
+    | {
+        facebook?: T;
+        instagram?: T;
+        tiktok?: T;
+        linkedin?: T;
+        youtube?: T;
+        whatsapp?: T;
+      };
+  header?:
+    | T
+    | {
+        label?: T;
+        linkType?: T;
+        page?: T;
+        url?: T;
+        newTab?: T;
+        id?: T;
+      };
+  footer?:
+    | T
+    | {
+        label?: T;
+        linkType?: T;
+        page?: T;
+        url?: T;
+        newTab?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -735,7 +900,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Az oldal neve, aktív téma, mérőkódok és közösségi linkek – egy helyen.
+ * Az (alapértelmezett) oldal neve, aktív téma, mérőkódok és közösségi linkek – egy helyen. További, saját domainen futó oldalak a Weboldalak alatt vehetők fel.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".

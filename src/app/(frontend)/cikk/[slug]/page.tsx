@@ -8,10 +8,8 @@ import React from 'react'
 import { ArticleJsonLd } from '@/components/JsonLd'
 import { DraftBar, LivePreviewListener } from '@/components/LivePreview'
 import { RichContent } from '@/components/RichContent'
-import { absoluteURL, getArticleBySlug, getServerURL, getSettings, resolveRedirect } from '@/lib/cms'
+import { absoluteURL, getArticleBySlug, getBaseURL, getSettings, resolveRedirect } from '@/lib/cms'
 import { asDoc } from '@/lib/types'
-
-export const revalidate = 60
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -23,13 +21,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const cover = asDoc(article.coverImage)
   const ogImage = asDoc(article.seo?.ogImage)
-  const image = absoluteURL(ogImage?.sizes?.og?.url || ogImage?.url || cover?.sizes?.og?.url || cover?.url)
+  const image = await absoluteURL(
+    ogImage?.sizes?.og?.url || ogImage?.url || cover?.sizes?.og?.url || cover?.url,
+  )
 
   return {
     title: article.seo?.metaTitle || article.title,
     description: article.seo?.metaDescription || article.excerpt || undefined,
     alternates: {
-      canonical: article.seo?.canonicalUrl || `${getServerURL()}/cikk/${article.slug}`,
+      canonical: article.seo?.canonicalUrl || `${await getBaseURL()}/cikk/${article.slug}`,
     },
     robots: article.seo?.noIndex ? { index: false, follow: false } : undefined,
     openGraph: {

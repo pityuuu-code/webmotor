@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { absoluteURL, getServerURL } from '@/lib/cms'
+import { absoluteURL, getBaseURL } from '@/lib/cms'
 import { asDoc, type ArticleDoc, type SiteSettingsDoc } from '@/lib/types'
 
 /**
  * Schema.org Article structured data – ettől érti meg a Google, hogy a
  * tartalom egy cikk, ki írta és mikor. Rich result megjelenést tesz lehetővé.
  */
-export function ArticleJsonLd({
+export async function ArticleJsonLd({
   article,
   settings,
 }: {
@@ -16,18 +16,19 @@ export function ArticleJsonLd({
 }) {
   const cover = asDoc(article.coverImage)
   const author = asDoc(article.author)
+  const image = cover?.url ? await absoluteURL(cover.sizes?.og?.url || cover.url) : undefined
 
   const data = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
     description: article.seo?.metaDescription || article.excerpt || undefined,
-    image: cover?.url ? [absoluteURL(cover.sizes?.og?.url || cover.url)] : undefined,
+    image: image ? [image] : undefined,
     datePublished: article.publishedAt || article.createdAt,
     dateModified: article.updatedAt,
     author: author?.name ? { '@type': 'Person', name: author.name } : undefined,
     publisher: { '@type': 'Organization', name: settings.siteName },
-    mainEntityOfPage: `${getServerURL()}/cikk/${article.slug}`,
+    mainEntityOfPage: `${await getBaseURL()}/cikk/${article.slug}`,
   }
 
   return (

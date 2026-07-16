@@ -4,6 +4,20 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.5.0 — 2026-07-16 (multi-tenant: több weboldal egy motorból)
+- Weboldalak kollekció: domainek, saját név/téma/logó/lábléc, mérőkódok,
+  közösségi linkek és saját fejléc-/láblécmenük oldalanként
+- A kérés domainje dönt: egyező domainnél a weboldal beállításai + tartalmai,
+  különben az alapértelmezett oldal (Oldalbeállítások + Menük globálok)
+- "Weboldal" mező a cikkeken, oldalakon, kategóriákon és átirányításokon
+  (üresen = alapértelmezett oldal); a keresés is oldalra szűr
+- A slug oldalanként egyedi (két weboldalon lehet ugyanaz a /kapcsolat),
+  ütközésvédelem hookkal az adatbázis-szintű unique helyett
+- Domainenkénti sitemap.xml és robots.txt (route handlerek), canonical és
+  OG URL-ek az adott domainre; minden kérés frissen renderelődik (nincs ISR)
+- Új migráció (weboldalak-multitenant); 4 új integrációs teszt; élő ellenőrzés
+  két hosttal (localhost + 127.0.0.1) elvégezve
+
 ## v0.4.0 — 2026-07-16 (oldalépítő bővítése)
 - 4 új szekció az oldalépítőben: Árlista (kiemelhető csomagok, CTA), Vélemények,
   GYIK (JS nélkül működő lenyílók), Kapcsolatűrlap

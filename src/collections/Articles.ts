@@ -1,8 +1,10 @@
 import type { CollectionConfig } from 'payload'
 
 import { seoFields } from '../fields/seo'
+import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
 import { revalidateSite } from '../hooks/revalidate'
+import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -26,6 +28,7 @@ export const Articles: CollectionConfig = {
     read: ({ req: { user } }) => (user ? true : { _status: { equals: 'published' } }),
   },
   hooks: {
+    beforeValidate: [uniqueFieldPerSite('articles', 'slug', 'URL (slug)')],
     beforeChange: [
       ({ data }) => {
         if (data?._status === 'published' && !data.publishedAt) {
@@ -73,6 +76,7 @@ export const Articles: CollectionConfig = {
     },
     // --- Oldalsáv ---
     slugField('title'),
+    siteField,
     {
       name: 'category',
       label: 'Kategória',

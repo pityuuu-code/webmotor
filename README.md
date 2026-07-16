@@ -15,6 +15,7 @@ Saját fejlesztésű, SEO-központú tartalomkezelő motor. **Next.js 16 + Paylo
 - **Magyar admin felület** (angol fallbackkel).
 - **Élesre kész alapok**: S3-kompatibilis médiatárolás (AWS S3, Cloudflare R2, MinIO, Supabase…) – a `.env`-ben megadott hozzáféréssel magától bekapcsol; adatbázis-migrációk éles telepítéshez (`pnpm migrate`).
 - **Keresés az oldalon** (Postgres full-text, magyarra hangolva): keresőmező a fejlécben + találati oldal a `/kereses` címen. Ékezetek nélkül is talál, a toldalékos alakokat is megtalálja (kutya → kutyák, kutyát), a címbeli találat előrébb rangsorol, mint a törzsbeli. A találati oldal noindex – a keresők nem indexelik. Beállítást nem igényel; külön adatbázis-index sem kell, több ezer cikkig gyors.
+- **Több weboldal egy motorból (multi-tenant)**: az Admin → *Weboldalak* alatt felvett oldalak saját domainen, saját névvel, témával, menükkel, mérőkódokkal és saját tartalommal futnak – egyetlen telepítésből. A sitemap, a robots.txt és a canonical URL-ek domainenként készülnek. Részletek lejjebb.
 
 ---
 
@@ -164,6 +165,24 @@ src/
 
 ---
 
+## Több weboldal egy motorból (multi-tenant)
+
+Alaphelyzetben a motor EGY oldalt szolgál ki: ez az **alapértelmezett oldal**, amit az *Oldalbeállítások* és a *Menük* kezel – ehhez semmi újat nem kell tudni.
+
+**Új weboldal indítása ugyanabból a motorból:**
+1. Admin → *Weboldalak* → *Új létrehozása*: adj belső nevet, vedd fel a domain(eke)t (pl. `ugyfel.hu` – ha www-vel is fut, azt külön sorként), állítsd be a nevét, témáját, menüit, mérőkódjait a füleken.
+2. Irányítsd a domaint a szerverre (DNS), és vedd fel a hosting oldalán is (Vercelnél: Domains; VPS-nél a reverse proxyban).
+3. A tartalmaknál (cikk, oldal, kategória, átirányítás) a jobb oldali sáv **Weboldal** mezőjében válaszd ki, melyik oldalé – üresen hagyva az alapértelmezett oldalé.
+
+**Amit érdemes tudni:**
+- A kérés domainje dönt: ha egyezik egy *Weboldalak*-bejegyzés domainjével, annak a beállításai és tartalmai élnek; különben az alapértelmezett oldal.
+- Két KÜLÖNBÖZŐ weboldalon lehet ugyanaz az URL (mindkettőn lehet pl. `/kapcsolat`) – egy oldalon belül a motor nem engedi az ütközést.
+- A keresés, a sitemap.xml, a robots.txt és a canonical URL-ek mind az adott domainre szűrve/számolva készülnek.
+- A médiatár és a felhasználók közösek (minden szerkesztő minden oldalt szerkeszthet) – a szerkesztői jogok oldalankénti szétválasztása későbbi fejlesztés.
+- Multi-tenant üzemben minden kérés frissen renderelődik (nincs oldal-cache) – kis és közepes forgalomnál ez észrevehetetlen; nagy forgalom alá tegyél CDN-t.
+
+---
+
 ## Adatbázis-migrációk (élesben)
 
 Két üzemmód van, és **soha nem szabad keverni őket ugyanazon az adatbázison**:
@@ -202,4 +221,6 @@ pnpm migrate:create ertelmes-nev
 3. Hírlevél-blokk + feliratkozás-kezelés.
 4. Automatikus közösségi posztolás publikáláskor (Meta Graph API, LinkedIn API) `afterChange` hookból.
 5. ~~Az oldalépítő szekciókészletének bővítése (árlista, vélemények, GYIK, kapcsolatűrlap) és vázlat-mentés a builderben.~~ ✅ Kész (v0.4.0).
-6. Több oldal kiszolgálása egy motorból (multi-tenant): `Sites` kollekció + domain-alapú témaválasztás.
+6. ~~Több oldal kiszolgálása egy motorból (multi-tenant): `Sites` kollekció + domain-alapú témaválasztás.~~ ✅ Kész (v0.5.0).
+
+Állás: 1., 2., 5., 6. kész; a 3. (hírlevél) döntés alapján kihagyva. Hátravan a 4. (automatikus közösségi posztolás – Meta/LinkedIn API-hozzáférést igényel); további természetes irány a szerkesztői jogosultságok oldalankénti szétválasztása.

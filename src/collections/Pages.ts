@@ -1,8 +1,10 @@
 import type { CollectionConfig } from 'payload'
 
 import { seoFields } from '../fields/seo'
+import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
 import { revalidateSite } from '../hooks/revalidate'
+import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -26,6 +28,7 @@ export const Pages: CollectionConfig = {
     read: ({ req: { user } }) => (user ? true : { _status: { equals: 'published' } }),
   },
   hooks: {
+    beforeValidate: [uniqueFieldPerSite('pages', 'slug', 'URL (slug)')],
     afterChange: [() => revalidateSite()],
     afterDelete: [() => revalidateSite()],
   },
@@ -53,6 +56,7 @@ export const Pages: CollectionConfig = {
       admin: { hidden: true },
     },
     slugField('title'),
+    siteField,
     {
       name: 'editorMode',
       label: 'Szerkesztési mód',
