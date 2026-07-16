@@ -42,6 +42,19 @@ export function SiteHeader({
             </Link>
           ))}
         </nav>
+        {/* Sima GET-űrlap: JavaScript nélkül is működik, a /kereses oldalra visz. */}
+        <form className="search-form" action="/kereses" role="search">
+          <input
+            type="search"
+            name="q"
+            placeholder="Keresés…"
+            aria-label="Keresés a cikkek között"
+          />
+          {/* Rejtett submit: enélkül az Enter nem minden böngészőben küldi be az űrlapot. */}
+          <button type="submit" className="visually-hidden">
+            Keresés
+          </button>
+        </form>
       </div>
     </header>
   )

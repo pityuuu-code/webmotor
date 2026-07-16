@@ -13,6 +13,7 @@ Saját fejlesztésű, SEO-központú tartalomkezelő motor. **Next.js 16 + Paylo
 - **Menükezelő** (Admin → *Menük*): fejléc- és láblécmenü, menüpontok húzással rendezhető sorrendben, belső oldalra vagy egyéni URL-re mutató linkekkel – mint a WP Megjelenés → Menük.
 - **Magyar admin felület** (angol fallbackkel).
 - **Élesre kész alapok**: S3-kompatibilis médiatárolás (AWS S3, Cloudflare R2, MinIO, Supabase…) – a `.env`-ben megadott hozzáféréssel magától bekapcsol; adatbázis-migrációk éles telepítéshez (`pnpm migrate`).
+- **Keresés az oldalon** (Postgres full-text, magyarra hangolva): keresőmező a fejlécben + találati oldal a `/kereses` címen. Ékezetek nélkül is talál, a toldalékos alakokat is megtalálja (kutya → kutyák, kutyát), a címbeli találat előrébb rangsorol, mint a törzsbeli. A találati oldal noindex – a keresők nem indexelik. Beállítást nem igényel; külön adatbázis-index sem kell, több ezer cikkig gyors.
 
 ---
 
@@ -194,7 +195,7 @@ pnpm migrate:create ertelmes-nev
 ## Fejlesztési térkép (javasolt sorrendben)
 
 1. ~~S3 médiatárolás (éleshez kötelező) és éles adatbázis-migrációk.~~ ✅ Kész (v0.2.0).
-2. Keresés az oldalon (Postgres full-text).
+2. ~~Keresés az oldalon (Postgres full-text).~~ ✅ Kész (v0.3.0).
 3. Hírlevél-blokk + feliratkozás-kezelés.
 4. Automatikus közösségi posztolás publikáláskor (Meta Graph API, LinkedIn API) `afterChange` hookból.
 5. Az oldalépítő szekciókészletének bővítése (árlista, vélemények, GYIK, kapcsolatűrlap) és vázlat-mentés a builderben.

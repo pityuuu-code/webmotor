@@ -52,3 +52,6 @@ node_modules/
 # mentések és feltöltött képek nem valók a verziókezelőbe
 mentesek/
 media/
+
+# Claude Code helyi beállítások (személyes, nem kerül a repóba)
+.claude/settings.local.json

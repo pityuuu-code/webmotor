@@ -1,3 +1,4 @@
+import { sql } from '@payloadcms/db-postgres/drizzle'
 import config from '@payload-config'
 import { getPayload } from 'payload'
 import { cache } from 'react'
@@ -41,6 +42,83 @@ export async function getArticles(options?: {
     depth: 1,
   })
   return result as unknown as { docs: ArticleDoc[]; totalPages: number }
+}
+
+/*
+ * Keresés (Postgres full-text).
+ *
+ * A magyar szótövező önmagában megbízhatatlan (nem idempotens: a "kutyák" szóból
+ * "kutya" tő lesz, de a "kutya" keresésből "kuty" – így épp a pontos szóalak nem
+ * találna). Ezért a fő ág ékezet-egyszerűsített PREFIX-egyezés ('simple' szótár +
+ * szó:* ), ami az agglutináló magyarban a toldalékos alakokat is megtalálja
+ * (kutya → kutyák, kutyát, kutyáról), a szótövezett ('hungarian') egyezés pedig
+ * ráadás-ágként bővíti a találati kört. Rangsor: cím (A) > kivonat (B) > törzs (C).
+ */
+const EKEZETES = 'áéíóöőúüű'
+const EKEZET_NELKUL = 'aeiooouuu'
+
+/** Ugyanaz az ékezet-egyszerűsítés, mint az SQL-beli translate() – a kettőnek egyeznie kell. */
+function ekezetlenit(szo: string): string {
+  let out = szo
+  for (let i = 0; i < EKEZETES.length; i++) out = out.replaceAll(EKEZETES[i], EKEZET_NELKUL[i])
+  return out
+}
+
+export async function searchArticles(
+  rawQuery: string,
+  options?: { limit?: number },
+): Promise<ArticleDoc[]> {
+  const payload = await client()
+
+  // Csak betűk/számok maradnak; max 8 szó, mind kötelező (ÉS kapcsolat), prefixként.
+  const words = rawQuery
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 8)
+  if (words.length === 0) return []
+  const prefixQuery = words.map((w) => `${ekezetlenit(w)}:*`).join(' & ')
+  const limit = options?.limit ?? 24
+
+  const db = (payload.db as unknown as { drizzle: { execute: (q: unknown) => Promise<{ rows: { id: number | string }[] }> } }).drizzle
+  const result = await db.execute(sql`
+    with cikkek as (
+      select
+        id,
+        setweight(to_tsvector('simple', translate(lower(coalesce(title, '')), 'áéíóöőúüű', 'aeiooouuu')), 'A')
+          || setweight(to_tsvector('simple', translate(lower(coalesce(excerpt, '')), 'áéíóöőúüű', 'aeiooouuu')), 'B')
+          || setweight(to_tsvector('simple', translate(lower(coalesce(jsonb_path_query_array(content, '$.**.text')::text, '')), 'áéíóöőúüű', 'aeiooouuu')), 'C') as vektor,
+        to_tsvector('hungarian',
+          coalesce(title, '') || ' ' || coalesce(excerpt, '') || ' '
+            || coalesce(jsonb_path_query_array(content, '$.**.text')::text, '')) as szotovezett
+      from articles
+      where _status = 'published'
+    )
+    select id,
+      ts_rank(vektor, to_tsquery('simple', ${prefixQuery}))
+        + ts_rank(szotovezett, websearch_to_tsquery('hungarian', ${rawQuery})) as pontszam
+    from cikkek
+    where vektor @@ to_tsquery('simple', ${prefixQuery})
+       or szotovezett @@ websearch_to_tsquery('hungarian', ${rawQuery})
+    order by pontszam desc
+    limit ${limit}
+  `)
+
+  const ids = result.rows.map((row) => Number(row.id))
+  if (ids.length === 0) return []
+
+  // A teljes dokumentumokat a szokásos Payload-lekérdezés adja (jogosultság, depth),
+  // a sorrendet a keresési pontszám szerint állítjuk vissza.
+  const found = await payload.find({
+    collection: 'articles' as never,
+    where: { id: { in: ids } },
+    depth: 1,
+    limit: ids.length,
+  })
+  const docs = found.docs as unknown as ArticleDoc[]
+  const byId = new Map(docs.map((doc) => [Number(doc.id), doc]))
+  return ids.map((id) => byId.get(id)).filter((doc): doc is ArticleDoc => Boolean(doc))
 }
 
 export async function getArticleBySlug(

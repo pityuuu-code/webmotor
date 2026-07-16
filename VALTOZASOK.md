@@ -4,6 +4,16 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.3.0 — 2026-07-16 (keresés az oldalon)
+- Postgres full-text keresés magyarra hangolva: ékezet-egyszerűsített
+  prefix-egyezés (a toldalékos alakokat is megtalálja) + szótövezett ág,
+  súlyozott rangsor (cím > kivonat > törzs); csak publikált cikkek között keres
+- Keresőmező a fejlécben (JavaScript nélkül is működő GET-űrlap) és találati
+  oldal a /kereses címen, üres- és nincs-találat állapotokkal
+- A találati oldal noindex (SEO-alapszabály)
+- 6 új integrációs teszt a keresésre (szóalak, ékezet, rangsor, vázlat-szűrés,
+  piszkált bemenet); élő böngészős ellenőrzés elvégezve
+
 ## v0.2.0 — 2026-07-16 (éles üzemre felkészítés)
 - S3-kompatibilis médiatárolás (@payloadcms/storage-s3): a .env-ben megadott
   hozzáféréssel magától bekapcsol (AWS S3, Cloudflare R2, MinIO, Supabase…);
