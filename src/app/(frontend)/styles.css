@@ -997,10 +997,42 @@ h3 {
   padding: 0.65rem 0.85rem;
 }
 
+.b-contact-form select {
+  font: inherit;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.85rem;
+}
+
 .b-contact-form input:focus,
-.b-contact-form textarea:focus {
+.b-contact-form textarea:focus,
+.b-contact-form select:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+/* Jelölőnégyzetes mező: a felirat a négyzet MELLETT, nem felette. */
+.b-form-checkbox {
+  display: flex !important;
+  grid-auto-flow: column;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem !important;
+  font-weight: 400 !important;
+}
+
+.b-form-checkbox input[type='checkbox'] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent);
+}
+
+.b-form-loading {
+  font-family: var(--font-ui), sans-serif;
+  color: var(--muted);
 }
 
 .b-contact-form .button { justify-self: start; }

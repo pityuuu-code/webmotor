@@ -23,9 +23,27 @@ export const FormSubmissions: CollectionConfig = {
     delete: ({ req }) => Boolean(req.user),
   },
   fields: [
-    { name: 'name', label: 'Név', type: 'text', required: true },
-    { name: 'email', label: 'E-mail-cím', type: 'email', required: true },
-    { name: 'message', label: 'Üzenet', type: 'textarea', required: true },
+    { name: 'name', label: 'Név', type: 'text' },
+    { name: 'email', label: 'E-mail-cím', type: 'email' },
+    { name: 'message', label: 'Üzenet', type: 'textarea' },
+    {
+      // Az űrlap-építős beküldések minden mezője itt van (felirat → érték).
+      name: 'data',
+      label: 'Beküldött adatok',
+      type: 'json',
+      admin: { description: 'Az űrlap összes mezője és a beküldött értékek.' },
+    },
+    {
+      name: 'form',
+      label: 'Űrlap',
+      type: 'relationship',
+      relationTo: 'forms',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Melyik űrlapról érkezett. Üres = a beépített kapcsolatűrlapról.',
+      },
+    },
     {
       name: 'path',
       label: 'Beküldő oldal',

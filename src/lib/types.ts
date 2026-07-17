@@ -70,6 +70,11 @@ export interface VideoEmbedData extends EmbedBase {
   title?: string | null
 }
 
+export interface FormEmbedData extends EmbedBase {
+  blockType: 'formEmbed'
+  form: { id: number } | number
+}
+
 /** A tartalommező lexical szerializált állapota – a RichContent komponens rendereli. */
 export type RichTextContent = unknown
 

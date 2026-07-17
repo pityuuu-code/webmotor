@@ -3,6 +3,7 @@ import Image from 'next/image'
 import React from 'react'
 
 import { ContactForm } from '../components/ContactForm'
+import { FormRenderer } from '../components/FormRenderer'
 
 /**
  * A vizuális oldalépítő (Puck) szekciókészlete.
@@ -426,6 +427,48 @@ export const puckConfig: Config = {
           <ContactForm successMessage={successMessage} />
         </section>
       ),
+    },
+
+    Urlap: {
+      label: 'Űrlap (saját, összerakható)',
+      fields: {
+        heading: { type: 'text', label: 'Címsor – üresen hagyható' },
+        form: {
+          type: 'external' as const,
+          label: 'Űrlap',
+          placeholder: 'Űrlap kiválasztása…',
+          showSearch: true,
+          fetchList: async ({ query }: { query?: string }) => {
+            const params = new URLSearchParams({ limit: '40', sort: 'name', depth: '0' })
+            if (query) params.set('where[name][contains]', query)
+            const res = await fetch(`/api/forms?${params.toString()}`, { credentials: 'include' })
+            if (!res.ok) return []
+            const json = await res.json()
+            return ((json.docs ?? []) as { id: number; name: string }[]).map((doc) => ({
+              id: doc.id,
+              name: doc.name,
+            }))
+          },
+          getItemSummary: (item: { name?: string }) => item?.name || 'Űrlap',
+        },
+      },
+      defaultProps: { heading: '', form: null },
+      render: ({ heading, form }) => {
+        const picked = form as { id: number; name?: string } | null
+        if (!picked?.id) {
+          return (
+            <div className="shell pb-text pb-placeholder">
+              Válassz űrlapot a bal oldali mezőben. Űrlapot az Admin → Űrlapok alatt tudsz összerakni.
+            </div>
+          )
+        }
+        return (
+          <section className="shell pb-text b-contact">
+            {heading && <h2>{heading}</h2>}
+            <FormRenderer formId={picked.id} />
+          </section>
+        )
+      },
     },
 
     Terkoz: {

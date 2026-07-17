@@ -2,9 +2,11 @@ import { RichText, type JSXConvertersFunction } from '@payloadcms/richtext-lexic
 import Image from 'next/image'
 import React from 'react'
 
+import { FormRenderer } from '@/components/FormRenderer'
 import {
   asDoc,
   type CtaEmbedData,
+  type FormEmbedData,
   type GalleryEmbedData,
   type MediaDoc,
   type RichTextContent,
@@ -103,6 +105,18 @@ const jsxConverters: JSXConvertersFunction = ({ defaultConverters }) => ({
             allowFullScreen
             loading="lazy"
           />
+        </div>
+      )
+    },
+
+    formEmbed: ({ node }: { node: { fields: unknown } }) => {
+      const fields = node.fields as FormEmbedData
+      const formId =
+        typeof fields.form === 'number' ? fields.form : (fields.form as { id?: number })?.id
+      if (!formId) return null
+      return (
+        <div className="b-contact">
+          <FormRenderer formId={formId} />
         </div>
       )
     },

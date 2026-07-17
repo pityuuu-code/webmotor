@@ -88,5 +88,20 @@ export const VideoEmbedBlock: Block = {
   ],
 }
 
+export const FormEmbedBlock: Block = {
+  slug: 'formEmbed',
+  labels: { singular: 'Űrlap', plural: 'Űrlapok' },
+  fields: [
+    {
+      name: 'form',
+      label: 'Űrlap',
+      type: 'relationship',
+      relationTo: 'forms',
+      required: true,
+      admin: { description: 'Az Admin → Űrlapok alatt összerakott űrlapok közül.' },
+    },
+  ],
+}
+
 /** A szerkesztő "/" menüjében elérhető beszúrható elemek. */
-export const embedBlocks: Block[] = [GalleryBlock, CtaBlock, VideoEmbedBlock]
+export const embedBlocks: Block[] = [GalleryBlock, CtaBlock, VideoEmbedBlock, FormEmbedBlock]

@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { BlocksFeature, FixedToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { en } from '@payloadcms/translations/languages/en'
@@ -13,6 +14,7 @@ import { Articles } from './collections/Articles'
 import { Categories } from './collections/Categories'
 import { FormSubmissions } from './collections/FormSubmissions'
 import { Media } from './collections/Media'
+import { Forms } from './collections/Forms'
 import { Pages } from './collections/Pages'
 import { Redirects } from './collections/Redirects'
 import { Sites } from './collections/Sites'
@@ -67,7 +69,7 @@ export default buildConfig({
     fallbackLanguage: 'hu',
     supportedLanguages: { hu, en },
   },
-  collections: [Articles, Pages, Categories, Media, Users, Redirects, FormSubmissions, Sites],
+  collections: [Articles, Pages, Categories, Media, Users, Redirects, Forms, FormSubmissions, Sites],
   globals: [SiteSettings, Navigation],
   // Klasszikus, WordPress-szerű szövegszerkesztő minden richText mezőben:
   // állandó eszköztár felül + a "/" beszúró menüben elérhető saját elemek.
@@ -78,6 +80,15 @@ export default buildConfig({
       BlocksFeature({ blocks: embedBlocks }),
     ],
   }),
+  // E-mail küldés (űrlap-értesítők, jelszó-visszaállítás): Resend, ha van kulcs
+  // a .env-ben; kulcs nélkül a levelek a szerver konzoljára íródnak (fejlesztés).
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
+        apiKey: process.env.RESEND_API_KEY,
+        defaultFromAddress: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+        defaultFromName: process.env.EMAIL_FROM_NAME || 'Webmotor',
+      })
+    : undefined,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

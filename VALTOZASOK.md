@@ -4,6 +4,23 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.8.0 — 2026-07-17 (űrlap-építő + e-mail alap — az S7 sprint magja)
+- Űrlap-építő (Admin → Űrlapok): kattintva összerakható mezők (szöveg, e-mail,
+  hosszú szöveg, legördülő, jelölőnégyzet; kötelezőség mezőnként), saját gomb-
+  felirat és sikerüzenet
+- Beszúrható az oldalépítőbe ("Űrlap" szekció) ÉS a cikkekbe (a "/" menüből)
+- Kitöltések a Beérkezett üzenetek közé (minden mező + kényelmi oszlopok),
+  szerveroldali ellenőrzéssel (kötelezőség, e-mail formátum, legördülő értékek)
+  és honeypot spam-védelemmel; multi-tenant: az űrlap weboldalához kötve
+- E-mail értesítés beküldéskor (Resend adapter): a .env-ben megadott
+  RESEND_API_KEY-jel magától bekapcsol, nélküle a levél a szerver konzoljára
+  íródik; a jelszó-visszaállító e-mailek is ezen mennek majd
+- Automata mentés szkript (scripts/mentes-automata.sh): napi futtatásra,
+  megőrzés 7 napi + 4 heti (vasárnapi), cron-példával — élesítése az S5-nél
+- A roadmap felkerült a GitHubra issue-listaként (#1–#6)
+- Migráció (urlap-epito); 5 új integrációs teszt; élő böngészős ellenőrzés
+  (kitöltés, mentés, konzol-e-mail) elvégezve
+
 ## v0.7.0 — 2026-07-17 (admin oldalváltó + teljes tartalom-szétválasztás — az S1 sprint lezárása)
 - Oldalváltó az admin bal oldali sávjában: a listák (cikkek, oldalak,
   kategóriák, médiatár, átirányítások, beérkezett üzenetek) a kiválasztott

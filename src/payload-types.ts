@@ -73,6 +73,7 @@ export interface Config {
     media: Media;
     users: User;
     redirects: Redirect;
+    forms: Form;
     'form-submissions': FormSubmission;
     sites: Site;
     'payload-kv': PayloadKv;
@@ -88,6 +89,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     sites: SitesSelect<false> | SitesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -523,6 +525,41 @@ export interface Redirect {
   createdAt: string;
 }
 /**
+ * Összerakható űrlapok. Beszúrás: oldalépítő → "Űrlap" szekció, vagy cikkben a "/" menüből.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  /**
+   * Pl. "Ajánlatkérés" – az adminban és az e-mail értesítésben látszik.
+   */
+  name: string;
+  /**
+   * A mezők sorrendje a bal oldali fogantyúval húzva rendezhető.
+   */
+  fields: {
+    label: string;
+    fieldType: 'text' | 'email' | 'textarea' | 'select' | 'checkbox';
+    required?: boolean | null;
+    options?: string | null;
+    id?: string | null;
+  }[];
+  submitLabel?: string | null;
+  successMessage?: string | null;
+  /**
+   * Beküldéskor ide megy értesítő e-mail; vesszővel elválasztva több cím is megadható. Üresen nincs e-mail (az üzenet az adminban így is megjelenik). Az e-mail-küldéshez a .env-ben be kell állítani a RESEND_API_KEY-t.
+   */
+  notifyEmails?: string | null;
+  /**
+   * Több weboldalas üzemben: melyik oldalon jelenjen meg. Üresen hagyva az alapértelmezett oldalé.
+   */
+  site?: (number | null) | Site;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * A kapcsolatűrlapon beküldött üzenetek – a legfrissebb legfelül.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -530,9 +567,25 @@ export interface Redirect {
  */
 export interface FormSubmission {
   id: number;
-  name: string;
-  email: string;
-  message: string;
+  name?: string | null;
+  email?: string | null;
+  message?: string | null;
+  /**
+   * Az űrlap összes mezője és a beküldött értékek.
+   */
+  data?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Melyik űrlapról érkezett. Üres = a beépített kapcsolatűrlapról.
+   */
+  form?: (number | null) | Form;
   /**
    * Melyik oldalon lévő űrlapról érkezett.
    */
@@ -591,6 +644,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'redirects';
         value: number | Redirect;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: number | Form;
       } | null)
     | ({
         relationTo: 'form-submissions';
@@ -806,12 +863,36 @@ export interface RedirectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  name?: T;
+  fields?:
+    | T
+    | {
+        label?: T;
+        fieldType?: T;
+        required?: T;
+        options?: T;
+        id?: T;
+      };
+  submitLabel?: T;
+  successMessage?: T;
+  notifyEmails?: T;
+  site?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions_select".
  */
 export interface FormSubmissionsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   message?: T;
+  data?: T;
+  form?: T;
   path?: T;
   site?: T;
   updatedAt?: T;
