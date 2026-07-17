@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { siteField } from '../fields/site'
+import { siteBaseListFilter } from '../hooks/siteListFilter'
 import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
 
 export const Redirects: CollectionConfig = {
@@ -10,6 +11,7 @@ export const Redirects: CollectionConfig = {
     useAsTitle: 'from',
     description:
       'SEO-létfontosságú: ha egy cikk URL-je megváltozik, itt vedd fel a régi címet, hogy a Google-ranking ne vesszen el.',
+    baseListFilter: siteBaseListFilter,
   },
   access: {
     read: () => true,

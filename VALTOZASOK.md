@@ -4,6 +4,16 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.7.0 — 2026-07-17 (admin oldalváltó + teljes tartalom-szétválasztás — az S1 sprint lezárása)
+- Oldalváltó az admin bal oldali sávjában: a listák (cikkek, oldalak,
+  kategóriák, médiatár, átirányítások, beérkezett üzenetek) a kiválasztott
+  weboldalra szűrnek, új tartalom automatikusan oda jön létre
+- A médiatár és a beérkezett üzenetek is weboldalhoz rendelhetők; az
+  űrlapbeküldések a beküldő domain alapján automatikusan kötődnek
+- Törölt weboldalra mutató váltó-állapot automatikus visszaállítása
+- Új migráció (media-uzenet-site); élő böngészős ellenőrzés (váltó, szűrés,
+  alapérték-kitöltés, host-alapú üzenet-hozzárendelés) elvégezve
+
 ## v0.6.0 — 2026-07-16 (keresés az oldalakban is — az S8 sprint lezárása)
 - A keresés mostantól az OLDALAKBAN is keres, nem csak a cikkekben: a
   szövegszerkesztős tartalomban és az oldalépítős (Puck) oldalak

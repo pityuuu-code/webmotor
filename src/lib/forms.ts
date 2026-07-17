@@ -1,6 +1,8 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
+import { getCurrentSite } from './cms'
+
 /**
  * A kapcsolatűrlap-beküldés feldolgozása: ellenőrzés + mentés a
  * Beérkezett üzenetek közé. A /api/kapcsolat végpont hívja; külön függvény,
@@ -36,10 +38,13 @@ export async function submitContactMessage(input: ContactInput): Promise<Contact
   if (!message || message.length > 5000)
     return { ok: false, error: 'Írj üzenetet (legfeljebb 5000 karakter).' }
 
+  // Multi-tenant: a beküldés domainje alapján kötjük a weboldalhoz (üres = alapértelmezett).
+  const site = await getCurrentSite()
+
   const payload = await getPayload({ config })
   await payload.create({
     collection: 'form-submissions' as never,
-    data: { name, email, message, path } as never,
+    data: { name, email, message, path, site: site?.id ?? null } as never,
     overrideAccess: true,
   })
   return { ok: true }

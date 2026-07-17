@@ -4,6 +4,7 @@ import { seoFields } from '../fields/seo'
 import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
 import { revalidateSite } from '../hooks/revalidate'
+import { siteBaseListFilter } from '../hooks/siteListFilter'
 import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
 
 export const Articles: CollectionConfig = {
@@ -12,6 +13,7 @@ export const Articles: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'publishedAt', '_status'],
+    baseListFilter: siteBaseListFilter,
     description: 'Blogcikkek és hírek. A publikált cikk a /cikk/slug címen jelenik meg, kinézetét az aktív téma adja.',
     preview: (doc) => {
       const base = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'

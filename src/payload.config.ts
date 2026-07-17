@@ -39,6 +39,10 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      // Oldalváltó a bal oldali sáv tetején (multi-tenant): melyik weboldalon dolgozol.
+      beforeNavLinks: ['/components/admin/SiteSwitcher#SiteSwitcher'],
+    },
     meta: {
       titleSuffix: ' – Webmotor admin',
     },

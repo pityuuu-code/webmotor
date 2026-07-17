@@ -1,11 +1,15 @@
 import type { CollectionConfig } from 'payload'
 
+import { siteField } from '../fields/site'
+import { siteBaseListFilter } from '../hooks/siteListFilter'
+
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Médiafájl', plural: 'Médiatár' },
   admin: {
     description:
       'Feltöltéskor a motor automatikusan legenerálja a szükséges képméreteket (kártya, borító, megosztási kép).',
+    baseListFilter: siteBaseListFilter,
   },
   access: {
     read: () => true,
@@ -32,5 +36,6 @@ export const Media: CollectionConfig = {
           'A kép rövid leírása. Fontos a SEO-hoz és a képernyőolvasót használóknak – írd le, mi látható a képen.',
       },
     },
+    siteField,
   ],
 }

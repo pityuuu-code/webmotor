@@ -4,6 +4,7 @@ import { seoFields } from '../fields/seo'
 import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
 import { revalidateSite } from '../hooks/revalidate'
+import { siteBaseListFilter } from '../hooks/siteListFilter'
 import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
 
 export const Pages: CollectionConfig = {
@@ -12,6 +13,7 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'editorMode', '_status'],
+    baseListFilter: siteBaseListFilter,
     description:
       'Statikus oldalak: rólunk, kapcsolat, impresszum stb. A publikált oldal a /slug címen érhető el; a menübe az Admin → Menük alatt teheted ki.',
     preview: (doc) => {

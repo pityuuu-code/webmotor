@@ -225,6 +225,10 @@ export interface Media {
    * A kép rövid leírása. Fontos a SEO-hoz és a képernyőolvasót használóknak – írd le, mi látható a képen.
    */
   alt: string;
+  /**
+   * Több weboldalas üzemben: melyik oldalon jelenjen meg. Üresen hagyva az alapértelmezett oldalé.
+   */
+  site?: (number | null) | Site;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -533,6 +537,10 @@ export interface FormSubmission {
    * Melyik oldalon lévő űrlapról érkezett.
    */
   path?: string | null;
+  /**
+   * Melyik weboldal űrlapjáról érkezett. Üres = alapértelmezett oldal.
+   */
+  site?: (number | null) | Site;
   updatedAt: string;
   createdAt: string;
 }
@@ -703,6 +711,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  site?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -804,6 +813,7 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
   email?: T;
   message?: T;
   path?: T;
+  site?: T;
   updatedAt?: T;
   createdAt?: T;
 }

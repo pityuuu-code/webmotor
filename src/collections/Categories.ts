@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
 import { revalidateSite } from '../hooks/revalidate'
+import { siteBaseListFilter } from '../hooks/siteListFilter'
 import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
 
 export const Categories: CollectionConfig = {
@@ -11,6 +12,7 @@ export const Categories: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     description: 'A cikkek témakörei – minden kategória saját listaoldalt kap (/kategoria/slug).',
+    baseListFilter: siteBaseListFilter,
   },
   access: {
     read: () => true,

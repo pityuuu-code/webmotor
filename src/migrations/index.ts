@@ -1,6 +1,7 @@
 import * as migration_20260716_170835_initial from './20260716_170835_initial';
 import * as migration_20260716_180330_urlap_bekuldesek from './20260716_180330_urlap_bekuldesek';
 import * as migration_20260716_183352_weboldalak_multitenant from './20260716_183352_weboldalak_multitenant';
+import * as migration_20260716_204204_media_uzenet_site from './20260716_204204_media_uzenet_site';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20260716_183352_weboldalak_multitenant.up,
     down: migration_20260716_183352_weboldalak_multitenant.down,
-    name: '20260716_183352_weboldalak_multitenant'
+    name: '20260716_183352_weboldalak_multitenant',
+  },
+  {
+    up: migration_20260716_204204_media_uzenet_site.up,
+    down: migration_20260716_204204_media_uzenet_site.down,
+    name: '20260716_204204_media_uzenet_site'
   },
 ];

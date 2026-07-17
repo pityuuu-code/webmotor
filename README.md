@@ -174,11 +174,14 @@ Alaphelyzetben a motor EGY oldalt szolgál ki: ez az **alapértelmezett oldal**,
 2. Irányítsd a domaint a szerverre (DNS), és vedd fel a hosting oldalán is (Vercelnél: Domains; VPS-nél a reverse proxyban).
 3. A tartalmaknál (cikk, oldal, kategória, átirányítás) a jobb oldali sáv **Weboldal** mezőjében válaszd ki, melyik oldalé – üresen hagyva az alapértelmezett oldalé.
 
+**Oldalváltó az adminban:** a bal oldali sáv tetején lévő „Melyik weboldalon dolgozol?" lenyílóval választhatsz. A listák (cikkek, oldalak, kategóriák, médiatár, átirányítások, beérkezett üzenetek) ilyenkor csak a kiválasztott oldal tartalmát mutatják, és minden ÚJ tartalom automatikusan ehhez az oldalhoz jön létre. A „Minden weboldal" nézet mindent mutat.
+
 **Amit érdemes tudni:**
 - A kérés domainje dönt: ha egyezik egy *Weboldalak*-bejegyzés domainjével, annak a beállításai és tartalmai élnek; különben az alapértelmezett oldal.
 - Két KÜLÖNBÖZŐ weboldalon lehet ugyanaz az URL (mindkettőn lehet pl. `/kapcsolat`) – egy oldalon belül a motor nem engedi az ütközést.
 - A keresés, a sitemap.xml, a robots.txt és a canonical URL-ek mind az adott domainre szűrve/számolva készülnek.
-- A médiatár és a felhasználók közösek (minden szerkesztő minden oldalt szerkeszthet) – a szerkesztői jogok oldalankénti szétválasztása későbbi fejlesztés.
+- A kapcsolatűrlap beküldései a beküldő domain alapján automatikusan a megfelelő weboldalhoz kötődnek.
+- A médiatárban a képek weboldalhoz rendelhetők (az oldalváltó itt is szűr); a felhasználók közösek – a szerkesztői jogok oldalankénti szétválasztása későbbi fejlesztés.
 - Multi-tenant üzemben minden kérés frissen renderelődik (nincs oldal-cache) – kis és közepes forgalomnál ez észrevehetetlen; nagy forgalom alá tegyél CDN-t.
 
 ---
