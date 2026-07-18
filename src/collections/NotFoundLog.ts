@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { isAdminUser, userSiteWhere } from '../access/roles'
 import { siteBaseListFilter } from '../hooks/siteListFilter'
 
 /**
@@ -22,8 +23,10 @@ export const NotFoundLog: CollectionConfig = {
   access: {
     create: () => false,
     update: () => false,
-    read: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    read: ({ req: { user } }) =>
+      !user ? false : isAdminUser(user) ? true : userSiteWhere(user),
+    delete: ({ req: { user } }) =>
+      !user ? false : isAdminUser(user) ? true : userSiteWhere(user),
   },
   fields: [
     { name: 'path', label: 'Útvonal', type: 'text', required: true, index: true },

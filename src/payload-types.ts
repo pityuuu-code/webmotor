@@ -469,7 +469,7 @@ export interface Category {
   createdAt: string;
 }
 /**
- * Az admin felület felhasználói. A cikkeknél szerzőként is megjelennek.
+ * Az admin felület felhasználói. Ügynökség-admin: mindent lát. Ügyfél-szerkesztő: csak a hozzárendelt weboldal tartalmát szerkesztheti.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
@@ -480,6 +480,11 @@ export interface User {
    * A cikkek szerzőjeként ez a név jelenik meg az oldalon.
    */
   name: string;
+  role: 'admin' | 'client';
+  /**
+   * Melyik weboldal tartalmát szerkesztheti. Üresen hagyva az alapértelmezett oldalét.
+   */
+  site?: (number | null) | Site;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -856,6 +861,8 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
+  site?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

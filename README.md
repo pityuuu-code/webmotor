@@ -185,7 +185,8 @@ Alaphelyzetben a motor EGY oldalt szolgál ki: ez az **alapértelmezett oldal**,
 - Két KÜLÖNBÖZŐ weboldalon lehet ugyanaz az URL (mindkettőn lehet pl. `/kapcsolat`) – egy oldalon belül a motor nem engedi az ütközést.
 - A keresés, a sitemap.xml, a robots.txt és a canonical URL-ek mind az adott domainre szűrve/számolva készülnek.
 - A kapcsolatűrlap beküldései a beküldő domain alapján automatikusan a megfelelő weboldalhoz kötődnek.
-- A médiatárban a képek weboldalhoz rendelhetők (az oldalváltó itt is szűr); a felhasználók közösek – a szerkesztői jogok oldalankénti szétválasztása későbbi fejlesztés.
+- A médiatárban a képek weboldalhoz rendelhetők (az oldalváltó itt is szűr).
+- **Szerepkörök:** a Felhasználóknál két szerep van. Az **Ügynökség-admin** mindent lát és szerkeszt. Az **Ügyfél-szerkesztő** (hozzárendelt weboldallal) CSAK a saját oldala tartalmát éri el – cikkek, oldalak, kategóriák, médiatár, űrlapok, átirányítások, 404-napló, üzenetek –, minden új tartalma automatikusan a saját oldalára kerül, a Weboldalak/Oldalbeállítások/Menük pedig nem is látszanak neki. A szerepét és a hozzárendelt oldalát csak admin módosíthatja.
 - Multi-tenant üzemben minden kérés frissen renderelődik (nincs oldal-cache) – kis és közepes forgalomnál ez észrevehetetlen; nagy forgalom alá tegyél CDN-t.
 
 ---

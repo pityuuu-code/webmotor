@@ -1,5 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
+import {
+  contentCreateAccess,
+  contentMutateAccess,
+  contentReadAccess,
+  forceClientSite,
+} from '../access/roles'
 import { siteField } from '../fields/site'
 import { siteBaseListFilter } from '../hooks/siteListFilter'
 import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
@@ -14,10 +20,14 @@ export const Redirects: CollectionConfig = {
     baseListFilter: siteBaseListFilter,
   },
   access: {
-    read: () => true,
+    read: contentReadAccess(),
+    create: contentCreateAccess,
+    update: contentMutateAccess,
+    delete: contentMutateAccess,
   },
   hooks: {
     beforeValidate: [uniqueFieldPerSite('redirects', 'from', 'régi útvonal')],
+    beforeChange: [forceClientSite],
   },
   fields: [
     {

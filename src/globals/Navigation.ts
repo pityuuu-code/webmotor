@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
+import { adminOnly, hiddenFromClients } from '../access/roles'
 import { menuArray } from '../fields/menu'
 import { revalidateSite } from '../hooks/revalidate'
 
@@ -14,9 +15,11 @@ export const Navigation: GlobalConfig = {
   admin: {
     description:
       'Az oldal fejléc- és láblécmenüje. Ami itt nincs felvéve, az nem jelenik meg a menüben – a publikált oldalak persze linkről és a keresőből így is elérhetők.',
+    hidden: hiddenFromClients,
   },
   access: {
     read: () => true,
+    update: adminOnly,
   },
   hooks: {
     afterChange: [() => revalidateSite()],

@@ -4,6 +4,18 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.10.0 — 2026-07-18 (ügyfél-szerepkörök — az S11 sprint)
+- Két szerep: Ügynökség-admin (minden) és Ügyfél-szerkesztő (csak a saját
+  weboldala tartalma: cikkek, oldalak, kategóriák, média, űrlapok,
+  átirányítások, 404-napló, beérkezett üzenetek)
+- Az ügyfél új tartalma kényszerítetten a saját oldalára kerül; a Weboldalak,
+  Oldalbeállítások és Menük az ügyfél elől el vannak rejtve és nem is
+  módosíthatók; az admin-oldalváltó csak adminnak jelenik meg
+- A szerepet és a hozzárendelt weboldalt csak admin állíthatja (mező-szintű
+  tiltás – az ügyfél a saját szerepét sem írhatja át)
+- A meglévő felhasználók automatikusan Ügynökség-adminok (nincs kizárás)
+- Migráció (szerepkorok); 7 új integrációs teszt; élő admin-ellenőrzés OK
+
 ## v0.9.0 — 2026-07-18 (okos átirányítások + 404-napló — az S9 sprint)
 - Publikált cikk/oldal slug-átírásakor automatikus 301-es átirányítás
   (kézi felvétel többé nem kell); vázlat-módosítás nem vált ki átirányítást

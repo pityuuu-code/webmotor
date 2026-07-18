@@ -4,6 +4,7 @@ import * as migration_20260716_183352_weboldalak_multitenant from './20260716_18
 import * as migration_20260716_204204_media_uzenet_site from './20260716_204204_media_uzenet_site';
 import * as migration_20260717_092859_urlap_epito from './20260717_092859_urlap_epito';
 import * as migration_20260718_043949_okos_atiranyitas_404 from './20260718_043949_okos_atiranyitas_404';
+import * as migration_20260718_044718_szerepkorok from './20260718_044718_szerepkorok';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260718_043949_okos_atiranyitas_404.up,
     down: migration_20260718_043949_okos_atiranyitas_404.down,
-    name: '20260718_043949_okos_atiranyitas_404'
+    name: '20260718_043949_okos_atiranyitas_404',
+  },
+  {
+    up: migration_20260718_044718_szerepkorok.up,
+    down: migration_20260718_044718_szerepkorok.down,
+    name: '20260718_044718_szerepkorok'
   },
 ];

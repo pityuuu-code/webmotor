@@ -1,5 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
+import {
+  contentCreateAccess,
+  contentMutateAccess,
+  contentReadAccess,
+  forceClientSite,
+} from '../access/roles'
 import { seoFields } from '../fields/seo'
 import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
@@ -28,10 +34,14 @@ export const Pages: CollectionConfig = {
     maxPerDoc: 25,
   },
   access: {
-    read: ({ req: { user } }) => (user ? true : { _status: { equals: 'published' } }),
+    read: contentReadAccess({ publicPublishedOnly: true }),
+    create: contentCreateAccess,
+    update: contentMutateAccess,
+    delete: contentMutateAccess,
   },
   hooks: {
     beforeValidate: [uniqueFieldPerSite('pages', 'slug', 'URL (slug)')],
+    beforeChange: [forceClientSite],
     afterChange: [autoRedirectOnSlugChange(''), () => revalidateSite()],
     afterDelete: [() => revalidateSite()],
   },

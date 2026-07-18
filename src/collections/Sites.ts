@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { adminOnly, hiddenFromClients } from '../access/roles'
 import { menuArray } from '../fields/menu'
 import { brandingFields, integrationFields, socialsGroup } from '../fields/siteBranding'
 
@@ -20,9 +21,15 @@ export const Sites: CollectionConfig = {
     defaultColumns: ['name', 'theme'],
     description:
       'Több weboldal kiszolgálása egy motorból. A fő (alapértelmezett) oldalhoz NEM kell ide bejegyzés – azt az Oldalbeállítások és a Menük kezeli.',
+    hidden: hiddenFromClients,
   },
   access: {
+    // Nyilvános olvasás kell (a motor a domain alapján innen dolgozik);
+    // módosítani csak ügynökség-admin tud – ügyfél a témához/mérőkódokhoz nem nyúlhat.
     read: () => true,
+    create: adminOnly,
+    update: adminOnly,
+    delete: adminOnly,
   },
   fields: [
     {

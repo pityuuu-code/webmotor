@@ -1,5 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
+import {
+  contentCreateAccess,
+  contentMutateAccess,
+  contentReadAccess,
+  forceClientSite,
+} from '../access/roles'
 import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
 import { revalidateSite } from '../hooks/revalidate'
@@ -15,10 +21,14 @@ export const Categories: CollectionConfig = {
     baseListFilter: siteBaseListFilter,
   },
   access: {
-    read: () => true,
+    read: contentReadAccess(),
+    create: contentCreateAccess,
+    update: contentMutateAccess,
+    delete: contentMutateAccess,
   },
   hooks: {
     beforeValidate: [uniqueFieldPerSite('categories', 'slug', 'URL (slug)')],
+    beforeChange: [forceClientSite],
     afterChange: [() => revalidateSite()],
   },
   fields: [

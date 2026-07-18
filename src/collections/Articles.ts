@@ -1,5 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
+import {
+  contentCreateAccess,
+  contentMutateAccess,
+  contentReadAccess,
+  forceClientSite,
+} from '../access/roles'
 import { seoFields } from '../fields/seo'
 import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
@@ -27,12 +33,16 @@ export const Articles: CollectionConfig = {
     maxPerDoc: 25,
   },
   access: {
-    // Látogatók csak a publikált cikkeket látják; bejelentkezve a vázlatok is elérhetők.
-    read: ({ req: { user } }) => (user ? true : { _status: { equals: 'published' } }),
+    // Látogató: csak publikált. Admin: minden. Ügyfél-szerkesztő: a saját weboldala.
+    read: contentReadAccess({ publicPublishedOnly: true }),
+    create: contentCreateAccess,
+    update: contentMutateAccess,
+    delete: contentMutateAccess,
   },
   hooks: {
     beforeValidate: [uniqueFieldPerSite('articles', 'slug', 'URL (slug)')],
     beforeChange: [
+      forceClientSite,
       ({ data }) => {
         if (data?._status === 'published' && !data.publishedAt) {
           data.publishedAt = new Date().toISOString()

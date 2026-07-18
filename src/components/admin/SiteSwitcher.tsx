@@ -20,12 +20,22 @@ function readCookie(): string {
 export function SiteSwitcher() {
   const [sites, setSites] = useState<SiteOption[]>([])
   const [value, setValue] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     // A süti csak a kliensen olvasható, ezért a kezdőértéket hydration után,
     // effektben állítjuk – különben szerver/kliens eltérés lenne.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setValue(readCookie())
+    // Az oldalváltó csak ügynökség-adminnak jár – az ügyfél-szerkesztő úgyis
+    // csak a saját weboldalát látja.
+    fetch('/api/users/me', { credentials: 'include' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        const role = (json?.user as { role?: string } | null)?.role
+        setIsAdmin(role !== 'client' && Boolean(json?.user))
+      })
+      .catch(() => setIsAdmin(false))
     fetch('/api/sites?limit=100&depth=0&sort=name', { credentials: 'include' })
       .then((res) => (res.ok ? res.json() : { docs: [] }))
       .then((json) => {
@@ -41,8 +51,8 @@ export function SiteSwitcher() {
       .catch(() => setSites([]))
   }, [])
 
-  // Egyetlen weboldal sincs felvéve → nincs mire váltani, nem jelenítünk meg semmit.
-  if (sites.length === 0) return null
+  // Csak adminnak, és csak ha van legalább egy felvett weboldal.
+  if (!isAdmin || sites.length === 0) return null
 
   const change = (next: string) => {
     setValue(next)

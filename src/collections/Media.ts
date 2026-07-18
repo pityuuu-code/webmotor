@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { contentCreateAccess, contentMutateAccess, forceClientSite, isAdminUser, userSiteWhere } from '../access/roles'
 import { siteField } from '../fields/site'
 import { siteBaseListFilter } from '../hooks/siteListFilter'
 
@@ -12,7 +13,15 @@ export const Media: CollectionConfig = {
     baseListFilter: siteBaseListFilter,
   },
   access: {
-    read: () => true,
+    // A képfájlok nyilvánosak (a látogatói oldalnak kellenek). Bejelentkezett
+    // ügyfél-szerkesztő a médiatárban csak a saját weboldala képeit látja.
+    read: ({ req: { user } }) => (!user || isAdminUser(user) ? true : userSiteWhere(user)),
+    create: contentCreateAccess,
+    update: contentMutateAccess,
+    delete: contentMutateAccess,
+  },
+  hooks: {
+    beforeChange: [forceClientSite],
   },
   upload: {
     mimeTypes: ['image/*'],

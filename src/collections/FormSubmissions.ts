@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { isAdminUser, userSiteWhere } from '../access/roles'
 import { siteBaseListFilter } from '../hooks/siteListFilter'
 
 /**
@@ -18,9 +19,11 @@ export const FormSubmissions: CollectionConfig = {
   },
   access: {
     create: () => false,
-    read: ({ req }) => Boolean(req.user),
+    read: ({ req: { user } }) =>
+      !user ? false : isAdminUser(user) ? true : userSiteWhere(user),
     update: () => false,
-    delete: ({ req }) => Boolean(req.user),
+    delete: ({ req: { user } }) =>
+      !user ? false : isAdminUser(user) ? true : userSiteWhere(user),
   },
   fields: [
     { name: 'name', label: 'Név', type: 'text' },

@@ -1,5 +1,12 @@
 import type { CollectionConfig } from 'payload'
 
+import {
+  contentCreateAccess,
+  contentMutateAccess,
+  forceClientSite,
+  isAdminUser,
+  userSiteWhere,
+} from '../access/roles'
 import { siteField } from '../fields/site'
 import { siteBaseListFilter } from '../hooks/siteListFilter'
 
@@ -20,7 +27,15 @@ export const Forms: CollectionConfig = {
     baseListFilter: siteBaseListFilter,
   },
   access: {
-    read: () => true,
+    // Nyilvános olvasás kell (a látogatói űrlap-megjelenítő tölti be);
+    // ügyfél-szerkesztő az adminban a saját weboldala űrlapjait kezeli.
+    read: ({ req: { user } }) => (!user || isAdminUser(user) ? true : userSiteWhere(user)),
+    create: contentCreateAccess,
+    update: contentMutateAccess,
+    delete: contentMutateAccess,
+  },
+  hooks: {
+    beforeChange: [forceClientSite],
   },
   fields: [
     {
