@@ -20,6 +20,7 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'editorMode', '_status'],
+    listSearchableFields: ['title', 'slug'],
     baseListFilter: siteBaseListFilter,
     description:
       'Statikus oldalak: rólunk, kapcsolat, impresszum stb. A publikált oldal a /slug címen érhető el; a menübe az Admin → Menük alatt teheted ki.',
@@ -40,7 +41,9 @@ export const Pages: CollectionConfig = {
     delete: contentMutateAccess,
   },
   hooks: {
-    beforeValidate: [uniqueFieldPerSite('pages', 'slug', 'URL (slug)')],
+    beforeValidate: [
+      uniqueFieldPerSite('pages', 'slug', 'URL (slug)', { autoSuffixOnCreate: true }),
+    ],
     beforeChange: [forceClientSite],
     afterChange: [autoRedirectOnSlugChange(''), () => revalidateSite()],
     afterDelete: [() => revalidateSite()],

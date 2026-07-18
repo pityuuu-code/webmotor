@@ -61,6 +61,10 @@ A táblákat a Payload fejlesztői módban automatikusan létrehozza és szinkro
 
 **Élő előnézet:** a cikk szerkesztőjében kattints a jobb felső sarok melletti *Élő előnézet* (szem ikonos) fülre – a képernyő kettéválik, jobb oldalt a cikk látszik a valódi kinézetében, és gépelés közben frissül. Felül átválthatsz mobil/tablet/asztali nézetre.
 
+**Cikk időzítése:** állítsd a jobb oldali sáv *Publikálás dátuma* mezőjét jövőbeli időpontra, majd kattints a **Közzététel**re – a cikk magától akkor jelenik meg az oldalon (addig a listákban, keresésben, sitemapben sem látszik). Nem kell hozzá semmilyen ütemező.
+
+**Cikk duplikálása:** a cikk szerkesztőjében a jobb felső ⋮ menü → *Duplicate* – a másolat vázlatként jön létre, az URL-je automatikusan számozott változatot kap (pl. `cikk-cim-2`).
+
 **Oldal összerakása az oldalépítőben:** 1. Admin → *Oldalak* → *Új létrehozása*: adj címet, a jobb oldali sávban a *Szerkesztési mód* legyen „Vizuális oldalépítő", majd **Közzététel**. 2. Nyisd meg a **/builder** címet (pl. http://localhost:3000/builder), és kattints az oldalnál a *Szerkesztés az építőben* gombra. 3. Bal oldalt a szekciók listája – húzd be őket középre, kattints rájuk a szövegek/képek átírásához. Menteni kétféleképp lehet: a **Vázlat mentése** gomb publikálás nélkül ment (a látogatók a régi változatot látják, te a *Vázlat-előnézet* linken nézheted az újat), a **Publish** gomb pedig ment és azonnal élesít. Az oldalépítő csak bejelentkezve érhető el.
 
 **Beérkezett üzenetek:** ha az oldaladon van „Kapcsolatűrlap" szekció, a beküldött üzenetek az Admin → *Beérkezett üzenetek* alatt gyűlnek (név, e-mail, üzenet, melyik oldalról jött). A kitöltött honeypot-mezős (bot-) beküldéseket a motor csendben eldobja.

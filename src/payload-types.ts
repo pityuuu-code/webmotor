@@ -185,7 +185,7 @@ export interface Article {
   category?: (number | null) | Category;
   author?: (number | null) | User;
   /**
-   * Üresen hagyva az első publikáláskor automatikusan kitöltődik.
+   * Üresen hagyva az első publikáláskor automatikusan kitöltődik. IDŐZÍTÉS: állíts be jövőbeli időpontot és kattints a Közzétételre – a cikk magától ekkor jelenik meg az oldalon.
    */
   publishedAt?: string | null;
   /**

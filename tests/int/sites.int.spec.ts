@@ -110,12 +110,13 @@ describe('Multi-tenant (Weboldalak)', () => {
     })) as { id: number }
     created.push({ collection: 'pages', id: sitos.id })
 
-    // Még egyszer az alapértelmezett oldalon: ütközés.
-    await expect(
-      payload.create({
-        collection: 'pages' as never,
-        data: { title: 'Duplikált', slug, editorMode: 'richtext', _status: 'published' } as never,
-      }),
-    ).rejects.toThrow()
+    // Még egyszer az alapértelmezett oldalon: nem ütközik, hanem számozott
+    // változatot kap (v0.11.0-tól, a Duplikálás gomb miatt).
+    const duplikalt = (await payload.create({
+      collection: 'pages' as never,
+      data: { title: 'Duplikált', slug, editorMode: 'richtext', _status: 'published' } as never,
+    })) as { id: number; slug: string }
+    created.push({ collection: 'pages', id: duplikalt.id })
+    expect(duplikalt.slug).toBe(`${slug}-2`)
   })
 })

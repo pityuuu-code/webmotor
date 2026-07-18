@@ -19,7 +19,8 @@ export const Articles: CollectionConfig = {
   labels: { singular: 'Cikk', plural: 'Cikkek' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'publishedAt', '_status'],
+    defaultColumns: ['title', 'category', 'author', 'publishedAt', '_status'],
+    listSearchableFields: ['title', 'slug', 'excerpt'],
     baseListFilter: siteBaseListFilter,
     description: 'Blogcikkek és hírek. A publikált cikk a /cikk/slug címen jelenik meg, kinézetét az aktív téma adja.',
     preview: (doc) => {
@@ -40,7 +41,9 @@ export const Articles: CollectionConfig = {
     delete: contentMutateAccess,
   },
   hooks: {
-    beforeValidate: [uniqueFieldPerSite('articles', 'slug', 'URL (slug)')],
+    beforeValidate: [
+      uniqueFieldPerSite('articles', 'slug', 'URL (slug)', { autoSuffixOnCreate: true }),
+    ],
     beforeChange: [
       forceClientSite,
       ({ data }) => {
@@ -112,7 +115,8 @@ export const Articles: CollectionConfig = {
       admin: {
         position: 'sidebar',
         date: { pickerAppearance: 'dayAndTime' },
-        description: 'Üresen hagyva az első publikáláskor automatikusan kitöltődik.',
+        description:
+          'Üresen hagyva az első publikáláskor automatikusan kitöltődik. IDŐZÍTÉS: állíts be jövőbeli időpontot és kattints a Közzétételre – a cikk magától ekkor jelenik meg az oldalon.',
       },
     },
     // --- SEO fül tartalma ---

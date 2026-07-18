@@ -4,6 +4,18 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.11.0 — 2026-07-18 (időzített publikálás + szerkesztői kényelem — az S12 sprint)
+- Cikk időzítése: jövőbeli Publikálás dátuma + Közzététel → a cikk magától
+  akkor jelenik meg (listák, közvetlen link, keresés, sitemap egyaránt);
+  nem kell hozzá ütemező — a lekérdezés dönt; az előnézet a szerkesztőknek
+  addig is működik
+- Cikk-duplikálás: a beépített Duplicate gomb mostantól működik — ütköző
+  URL-nél a másolat számozott slugot kap (cim-2, cim-3); kézi átírásnál az
+  ütközés továbbra is hibaüzenet
+- Admin listák: szerző oszlop a cikkeknél, jobb listakeresés
+  (cím/slug/kivonat)
+- 6 új integrációs teszt (42 összesen)
+
 ## v0.10.0 — 2026-07-18 (ügyfél-szerepkörök — az S11 sprint)
 - Két szerep: Ügynökség-admin (minden) és Ügyfél-szerkesztő (csak a saját
   weboldala tartalma: cikkek, oldalak, kategóriák, média, űrlapok,

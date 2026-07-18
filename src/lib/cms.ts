@@ -60,6 +60,20 @@ export function siteContentFilter(site: SiteDoc | null) {
   return site ? { site: { equals: site.id } } : { site: { exists: false } }
 }
 
+/**
+ * Időzített publikálás: a jövőbeli publikálás-dátumú cikk már publikált
+ * állapotú, de a látogatók csak a megadott időponttól látják – NEM kell hozzá
+ * ütemező/cron, egyszerűen a lekérdezés dönt. (WP-s viselkedés.)
+ */
+function mareljott() {
+  return {
+    or: [
+      { publishedAt: { exists: false } },
+      { publishedAt: { less_than_equal: new Date().toISOString() } },
+    ],
+  }
+}
+
 export const getSettings = cache(async (): Promise<SiteSettingsDoc> => {
   const site = await getCurrentSite()
   if (site) return site
@@ -79,6 +93,7 @@ export async function getArticles(options?: {
     collection: 'articles' as never,
     where: {
       _status: { equals: 'published' },
+      ...mareljott(),
       ...siteContentFilter(site),
       ...(options?.categoryId ? { category: { equals: options.categoryId } } : {}),
     },
@@ -151,6 +166,7 @@ export async function searchContent(
             || coalesce(jsonb_path_query_array(content, '$.**.text')::text, '')) as szotovezett
       from articles
       where _status = 'published' ${siteCond}
+        and (published_at is null or published_at <= now())
       union all
       select
         'page' as tipus,
@@ -230,7 +246,7 @@ export async function getArticleBySlug(
     where: {
       slug: { equals: slug },
       ...siteContentFilter(site),
-      ...(draft ? {} : { _status: { equals: 'published' } }),
+      ...(draft ? {} : { _status: { equals: 'published' }, ...mareljott() }),
     },
     limit: 1,
     depth: 2,
@@ -308,7 +324,7 @@ export async function getAllForSitemap(): Promise<{
   const [articles, pages, categories] = await Promise.all([
     payload.find({
       collection: 'articles' as never,
-      where: { _status: { equals: 'published' }, ...siteContentFilter(site) },
+      where: { _status: { equals: 'published' }, ...mareljott(), ...siteContentFilter(site) },
       limit: 1000,
       depth: 0,
       select: { slug: true, updatedAt: true } as never,

@@ -27,7 +27,9 @@ export const Categories: CollectionConfig = {
     delete: contentMutateAccess,
   },
   hooks: {
-    beforeValidate: [uniqueFieldPerSite('categories', 'slug', 'URL (slug)')],
+    beforeValidate: [
+      uniqueFieldPerSite('categories', 'slug', 'URL (slug)', { autoSuffixOnCreate: true }),
+    ],
     beforeChange: [forceClientSite],
     afterChange: [() => revalidateSite()],
   },
