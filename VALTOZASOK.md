@@ -4,6 +4,14 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.12.0 — 2026-07-18 (galéria + térkép szekció — az S10 sprint lezárása)
+- Képes galéria szekció az oldalépítőben (képek a médiatárból, rácsban)
+- Térkép szekció: Google Maps beágyazás API-kulcs nélkül — csak a címet kell
+  beírni; három magasság választható
+- A "Visszavonás/Újra" a Puck fejlécének beépített nyilaival elérhető
+  (dokumentálva); ezzel az S10 sprint minden pontja kész
+- Élő böngészős ellenőrzés elvégezve
+
 ## v0.11.0 — 2026-07-18 (időzített publikálás + szerkesztői kényelem — az S12 sprint)
 - Cikk időzítése: jövőbeli Publikálás dátuma + Közzététel → a cikk magától
   akkor jelenik meg (listák, közvetlen link, keresés, sitemap egyaránt);

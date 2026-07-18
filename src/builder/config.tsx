@@ -429,6 +429,98 @@ export const puckConfig: Config = {
       ),
     },
 
+    Galeria: {
+      label: 'Képes galéria',
+      fields: {
+        heading: { type: 'text', label: 'Címsor – üresen hagyható' },
+        items: {
+          type: 'array',
+          label: 'Képek',
+          getItemSummary: (item: { media?: { alt?: string } | null }) =>
+            item?.media?.alt || 'Kép',
+          arrayFields: {
+            media: { ...mediaField, label: 'Kép' },
+          },
+        },
+      },
+      defaultProps: { heading: '', items: [] },
+      render: ({ heading, items }) => {
+        const kepek = ((items as { media?: MediaPick | null }[]) ?? [])
+          .map((item) => item.media)
+          .filter((media): media is MediaPick => Boolean(media?.url))
+        if (kepek.length === 0) {
+          return (
+            <div className="shell pb-text pb-placeholder">
+              Adj hozzá képeket a bal oldali „Képek” listában.
+            </div>
+          )
+        }
+        return (
+          <section className="shell pb-text">
+            {heading && <h2>{heading}</h2>}
+            <div className="b-gallery">
+              {kepek.map((media, i) => (
+                <figure key={`${media.id}-${i}`}>
+                  <Image
+                    src={media.url}
+                    alt={media.alt || ''}
+                    width={media.width || 960}
+                    height={media.height || 640}
+                    sizes="(max-width: 720px) 50vw, 340px"
+                  />
+                </figure>
+              ))}
+            </div>
+          </section>
+        )
+      },
+    },
+
+    Terkep: {
+      label: 'Térkép (Google Maps)',
+      fields: {
+        heading: { type: 'text', label: 'Címsor – üresen hagyható' },
+        address: {
+          type: 'text',
+          label: 'Cím vagy hely',
+        },
+        magassag: {
+          type: 'select',
+          label: 'Magasság',
+          options: [
+            { label: 'Alacsony', value: 'alacsony' },
+            { label: 'Közepes', value: 'kozepes' },
+            { label: 'Magas', value: 'magas' },
+          ],
+        },
+      },
+      defaultProps: { heading: '', address: '', magassag: 'kozepes' },
+      // Sima Google Maps beágyazás – nem kell hozzá API-kulcs.
+      render: ({ heading, address, magassag }) => {
+        if (!address) {
+          return (
+            <div className="shell pb-text pb-placeholder">
+              Írd be a címet a bal oldali mezőben (pl. „Budapest, Kossuth tér 1.”).
+            </div>
+          )
+        }
+        return (
+          <section className="shell pb-text">
+            {heading && <h2>{heading}</h2>}
+            <div className={`b-map b-map-${magassag || 'kozepes'}`}>
+              <iframe
+                src={`https://www.google.com/maps?q=${encodeURIComponent(String(address))}&output=embed`}
+                title={`Térkép: ${address}`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          </section>
+        )
+      },
+    },
+
     Urlap: {
       label: 'Űrlap (saját, összerakható)',
       fields: {
