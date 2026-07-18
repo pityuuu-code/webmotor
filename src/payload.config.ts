@@ -15,6 +15,7 @@ import { Categories } from './collections/Categories'
 import { FormSubmissions } from './collections/FormSubmissions'
 import { Media } from './collections/Media'
 import { Forms } from './collections/Forms'
+import { NotFoundLog } from './collections/NotFoundLog'
 import { Pages } from './collections/Pages'
 import { Redirects } from './collections/Redirects'
 import { Sites } from './collections/Sites'
@@ -69,7 +70,18 @@ export default buildConfig({
     fallbackLanguage: 'hu',
     supportedLanguages: { hu, en },
   },
-  collections: [Articles, Pages, Categories, Media, Users, Redirects, Forms, FormSubmissions, Sites],
+  collections: [
+    Articles,
+    Pages,
+    Categories,
+    Media,
+    Users,
+    Redirects,
+    NotFoundLog,
+    Forms,
+    FormSubmissions,
+    Sites,
+  ],
   globals: [SiteSettings, Navigation],
   // Klasszikus, WordPress-szerű szövegszerkesztő minden richText mezőben:
   // állandó eszköztár felül + a "/" beszúró menüben elérhető saját elemek.

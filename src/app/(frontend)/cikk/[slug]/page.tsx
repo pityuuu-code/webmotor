@@ -9,6 +9,7 @@ import { ArticleJsonLd } from '@/components/JsonLd'
 import { DraftBar, LivePreviewListener } from '@/components/LivePreview'
 import { RichContent } from '@/components/RichContent'
 import { absoluteURL, getArticleBySlug, getBaseURL, getSettings, resolveRedirect } from '@/lib/cms'
+import { log404 } from '@/lib/log404'
 import { asDoc } from '@/lib/types'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -56,6 +57,7 @@ export default async function ArticlePage({ params }: Props) {
       if (target.permanent) permanentRedirect(target.to)
       redirect(target.to)
     }
+    await log404(`/cikk/${slug}`)
     notFound()
   }
 

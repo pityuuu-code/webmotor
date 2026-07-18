@@ -7,6 +7,7 @@ Saját fejlesztésű, SEO-központú tartalomkezelő motor. **Next.js 16 + Paylo
 - **Klasszikus, WordPress-szerű szövegszerkesztő** – állandó eszköztár (címsorok, félkövér, listák, link, kép), "/" beszúró menü, és a szövegbe szúrható elemek: galéria, CTA, YouTube-videó. Vázlat/publikálás munkafolyamat, automatikus mentés, verziózás.
 - **Három beépített design téma** (*Folyóirat*, *Stúdió*, *Magazin*) – az adminban egy legördülővel váltható, a tartalomhoz nem kell hozzányúlni.
 - **SEO alapfelszereltség**: cikkenkénti meta cím/leírás/OG-kép/canonical/noindex, automatikus `sitemap.xml` és `robots.txt`, Schema.org Article JSON-LD, 301-es átirányítás-kezelő, automatikus képméretezés, Search Console hitelesítő mező.
+- **Okos átirányítások + 404-napló**: ha egy publikált cikk/oldal URL-jét átírod, a régi címről **magától** készül 301-es átirányítás (láncok kisimítva – A→B→C helyett A→C). Az Admin → *404-napló* mutatja, milyen nem létező címekre érkeznek látogatók, számlálóval – a gyakoriakra érdemes átirányítást felvenni.
 - **Integrációs központ**: Google Tag Manager egy kattintással, EU-kompatibilis süti-sáv (Google Consent Mode v2), közösségi linkek, lebegő WhatsApp-gomb.
 - **Élő előnézet**: a cikk/oldal szerkesztése közben oldalt látod a valódi megjelenést az aktív témával, mobil/tablet/asztali nézetben – gépelés közben, kb. másodperces késéssel frissül.
 - **Vizuális oldalépítő (Puck)**: az oldalak húzd-és-ejtsd módon, kész szekciókból is összerakhatók (hero, szöveg, kép, kártyák, CTA, videó, árlista, vélemények, GYIK, kapcsolatűrlap, térköz) a bejelentkezéshez kötött **/builder** felületen. A szekciók a témák stílusát öröklik, így témaváltáskor ezek az oldalak is átöltöznek. A *Vázlat mentése* gombbal publikálás nélkül is menthetsz – az eredmény a *Vázlat-előnézet* linkkel nézhető meg, élesíteni a *Publish* gomb fog.
@@ -70,7 +71,7 @@ A táblákat a Payload fejlesztői módban automatikusan létrehozza és szinkro
 
 **Témaváltás:** Admin → *Oldalbeállítások* → *Aktív design téma*. Mentés után az egész oldal átöltözik.
 
-**URL-változás (fontos SEO-szabály):** ha egy publikált cikk slugját átírod, vedd fel a régit az Admin → *Átirányítások* alá (`/cikk/regi-slug` → `/cikk/uj-slug`), különben a Google-ban gyűjtött helyezés elveszik.
+**URL-változás:** ha egy publikált cikk vagy oldal slugját átírod, a motor **magától felveszi** a 301-es átirányítást a régi címről (látható és szerkeszthető az Admin → *Átirányítások* alatt) – a Google-helyezés nem veszik el. Kézzel csak akkor kell átirányítást felvenned, ha külső/örökölt címekről irányítanál át (ehhez adnak ötletet a *404-napló* leggyakoribb sorai).
 
 ---
 

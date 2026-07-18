@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { seoFields } from '../fields/seo'
 import { siteField } from '../fields/site'
 import { slugField } from '../fields/slug'
+import { autoRedirectOnSlugChange } from '../hooks/autoRedirect'
 import { revalidateSite } from '../hooks/revalidate'
 import { siteBaseListFilter } from '../hooks/siteListFilter'
 import { uniqueFieldPerSite } from '../hooks/uniqueFieldPerSite'
@@ -31,7 +32,7 @@ export const Pages: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [uniqueFieldPerSite('pages', 'slug', 'URL (slug)')],
-    afterChange: [() => revalidateSite()],
+    afterChange: [autoRedirectOnSlugChange(''), () => revalidateSite()],
     afterDelete: [() => revalidateSite()],
   },
   fields: [

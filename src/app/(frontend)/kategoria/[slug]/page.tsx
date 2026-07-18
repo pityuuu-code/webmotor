@@ -4,6 +4,7 @@ import React from 'react'
 
 import { ArticleCard } from '@/components/SiteChrome'
 import { getArticles, getCategoryBySlug } from '@/lib/cms'
+import { log404 } from '@/lib/log404'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -20,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params
   const category = await getCategoryBySlug(slug)
-  if (!category) notFound()
+  if (!category) {
+    await log404(`/kategoria/${slug}`)
+    notFound()
+  }
 
   const { docs: articles } = await getArticles({ categoryId: category.id, limit: 24 })
 

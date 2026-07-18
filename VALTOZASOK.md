@@ -4,6 +4,15 @@ Minden verzióhoz tartozik egy letölthető csomag (webmotor-vX.Y.Z.zip) és a f
 előtt készített tartalmi mentés (mentesek/ mappa). Visszaállás: régi csomag +
 scripts/visszaallitas.sh a hozzá tartozó mentéssel.
 
+## v0.9.0 — 2026-07-18 (okos átirányítások + 404-napló — az S9 sprint)
+- Publikált cikk/oldal slug-átírásakor automatikus 301-es átirányítás
+  (kézi felvétel többé nem kell); vázlat-módosítás nem vált ki átirányítást
+- Átirányítás-láncok kisimítása (A→B→C helyett minden közvetlenül az élő
+  címre mutat) és a visszanevezéskor feleslegessé váló átirányítás törlése
+- 404-napló (Admin → 404-napló): nem létező címekre érkező látogatások
+  útvonalanként számolva, utolsó találat idejével, weboldalanként szűrhetően
+- Migráció (okos-atiranyitas-404); 6 új integrációs teszt; élő ellenőrzés OK
+
 ## v0.8.0 — 2026-07-17 (űrlap-építő + e-mail alap — az S7 sprint magja)
 - Űrlap-építő (Admin → Űrlapok): kattintva összerakható mezők (szöveg, e-mail,
   hosszú szöveg, legördülő, jelölőnégyzet; kötelezőség mezőnként), saját gomb-

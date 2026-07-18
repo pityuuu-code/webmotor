@@ -73,6 +73,7 @@ export interface Config {
     media: Media;
     users: User;
     redirects: Redirect;
+    'not-found-log': NotFoundLog;
     forms: Form;
     'form-submissions': FormSubmission;
     sites: Site;
@@ -89,6 +90,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    'not-found-log': NotFoundLogSelect<false> | NotFoundLogSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     sites: SitesSelect<false> | SitesSelect<true>;
@@ -525,6 +527,24 @@ export interface Redirect {
   createdAt: string;
 }
 /**
+ * Nem létező címek, amikre látogató érkezett – a leggyakoribbakra érdemes átirányítást felvenni. A lista magától gyűlik.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "not-found-log".
+ */
+export interface NotFoundLog {
+  id: number;
+  path: string;
+  /**
+   * Hányszor futott erre a címre látogató.
+   */
+  count?: number | null;
+  lastSeenAt?: string | null;
+  site?: (number | null) | Site;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Összerakható űrlapok. Beszúrás: oldalépítő → "Űrlap" szekció, vagy cikkben a "/" menüből.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -644,6 +664,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'redirects';
         value: number | Redirect;
+      } | null)
+    | ({
+        relationTo: 'not-found-log';
+        value: number | NotFoundLog;
       } | null)
     | ({
         relationTo: 'forms';
@@ -857,6 +881,18 @@ export interface RedirectsSelect<T extends boolean = true> {
   from?: T;
   to?: T;
   permanent?: T;
+  site?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "not-found-log_select".
+ */
+export interface NotFoundLogSelect<T extends boolean = true> {
+  path?: T;
+  count?: T;
+  lastSeenAt?: T;
   site?: T;
   updatedAt?: T;
   createdAt?: T;

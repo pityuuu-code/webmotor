@@ -7,6 +7,7 @@ import { DraftBar, LivePreviewListener } from '@/components/LivePreview'
 import { PuckRender } from '@/components/PuckRender'
 import { RichContent } from '@/components/RichContent'
 import { getBaseURL, getPageBySlug, resolveRedirect } from '@/lib/cms'
+import { log404 } from '@/lib/log404'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -34,6 +35,7 @@ export default async function StaticPage({ params }: Props) {
       if (target.permanent) permanentRedirect(target.to)
       redirect(target.to)
     }
+    await log404(`/${slug}`)
     notFound()
   }
 
